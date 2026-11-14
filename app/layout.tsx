@@ -16,6 +16,9 @@ export const metadata: Metadata = {
   description:
     "New in town? Pick a plan near you and tap I'm in. If enough people join, it's on. If not, it's quietly called off — you never walk into an empty room.",
   openGraph: { siteName: "iFound", type: "website" },
+  applicationName: "iFound",
+  appleWebApp: { capable: true, title: "iFound", statusBarStyle: "default" },
+  icons: { apple: "/apple-touch-icon.png" },
 };
 
 export const viewport: Viewport = {

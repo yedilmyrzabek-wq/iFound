@@ -85,6 +85,26 @@ External pinger every 10 min → GET /api/cron/sweep (Bearer CRON_SECRET)
 
 Tailwind CSS v4, Leaflet + react-leaflet (client-only, `L.divIcon` markers), Luxon (IANA zones), zod, SWR polling, nanoid, Vitest.
 
+## Key dependencies
+
+| Dependency | What it does here |
+|---|---|
+| [Next.js 15](https://nextjs.org) (React 19, TypeScript) | App Router pages, route handlers (`/api/*`), middleware for the anonymous `ifound_uid` cookie |
+| [Supabase](https://supabase.com) Postgres | All data + the threshold logic as SQL functions (`002_functions.sql`, `005_repeat_and_funnel.sql`); `pg_cron` + `pg_net` run the sweep every 10 min |
+| Supabase Storage | Private `avatars` bucket; photos served via 1-hour signed URLs |
+| [Resend](https://resend.com) | Transactional email ("It's on", reminders, invites) with `.ics` attachments |
+| [Stripe](https://stripe.com) (test mode) | iFound+ subscription: Checkout, webhook, restore |
+| [Leaflet](https://leafletjs.com) + react-leaflet | Maps; data © OpenStreetMap contributors, tiles © Esri |
+| [Luxon](https://moment.github.io/luxon/) | Every time shown and entered in the city's IANA time zone |
+| [SWR](https://swr.vercel.app) | Live counters (8 s on a plan, 30 s on a city) |
+| [framer-motion](https://motion.dev) | Swipe deck gestures |
+| [zod](https://zod.dev) | Input validation on client and server |
+| [Tailwind CSS v4](https://tailwindcss.com) | Styling (letterboard design system in `app/globals.css`) |
+| [Vitest](https://vitest.dev) + `pg` | Tests against real Postgres (incl. 10 parallel joins) |
+| [Vercel](https://vercel.com) | Hosting + Vercel Analytics (page views) |
+
+No AI/LLM APIs are used. The app is installable (web app manifest), with no service worker on purpose: counters must always be live.
+
 ## Run locally
 
 ```bash
