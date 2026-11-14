@@ -1,6 +1,6 @@
 // Test DB: applies 001 + 002 into a throwaway schema, so tests never touch real data.
 // Needs DATABASE_URL (a direct Postgres connection — Supabase "Session"/direct URL, or a local Postgres).
-import { readFileSync, existsSync } from "node:fs";
+import { readFileSync, readdirSync, existsSync } from "node:fs";
 import path from "node:path";
 import { randomUUID } from "node:crypto";
 import pg from "pg";
@@ -36,10 +36,10 @@ export async function createTestDb(): Promise<TestDb> {
     await c.query(`set search_path to ${schema}, extensions`);
     const dir = path.join(process.cwd(), "supabase", "migrations");
     // pgcrypto is already installed on Supabase/most hosts; gen_random_uuid() is core since PG13.
-    const init = readFileSync(path.join(dir, "001_init.sql"), "utf8").replace(/create extension[^;]*;/i, "");
-    await c.query(init);
-    await c.query(readFileSync(path.join(dir, "002_functions.sql"), "utf8"));
-    await c.query(readFileSync(path.join(dir, "003_seed_cities.sql"), "utf8"));
+    // Every migration, in order, exactly as production applies them.
+    for (const file of readdirSync(dir).filter((f) => f.endsWith(".sql")).sort()) {
+      await c.query(readFileSync(path.join(dir, file), "utf8").replace(/create extension[^;]*;/gi, ""));
+    }
   } finally {
     c.release();
   }

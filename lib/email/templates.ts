@@ -144,6 +144,37 @@ export function joinedConfirmed(p: PlanInfo & { count: number; leaveUrl: string 
   };
 }
 
+export function reminderDayBefore(p: PlanInfo & { count: number; whenShort: string; leaveUrl: string }) {
+  return {
+    subject: `Tomorrow: ${p.title}, ${p.whenShort}`,
+    ...layout({
+      heading: "See you tomorrow",
+      lines: [
+        `${p.count} people are going. Same place, same time — tap below for the map.`,
+        "Plans change? Free up your spot so it doesn't look empty.",
+      ],
+      plan: p,
+      cta: "Open the plan",
+      leaveUrl: p.leaveUrl,
+    }),
+  };
+}
+
+export function repeatInvite(p: PlanInfo & { hostName: string }) {
+  return {
+    subject: `Same crew again? ${p.title}, ${p.when}`,
+    ...layout({
+      heading: "Same crew, next week?",
+      lines: [
+        `${p.hostName} is running it again. You were in last time, so you hear about it first.`,
+        "It only happens if enough people are in — tap below to count yourself in.",
+      ],
+      plan: p,
+      cta: "Count me in",
+    }),
+  };
+}
+
 export function cancelledUnfilled(p: PlanInfo) {
   return {
     subject: "Didn't fill — called off",

@@ -5,6 +5,7 @@ import { RULES, recordHits, underLimits } from "@/lib/limits";
 import { joinSchema } from "@/lib/validation";
 import { hasProfanity } from "@/lib/profanity";
 import { notifyJoin } from "@/lib/email/notify";
+import { track } from "@/lib/analytics";
 import { getProfile, saveProfile } from "@/lib/profile";
 import type { EventStatus, JoinResponse, JoinResult } from "@/lib/types";
 
@@ -53,7 +54,7 @@ export async function POST(req: Request, { params }: { params: Promise<{ code: s
 
   const { data: ev } = await db()
     .from("events")
-    .select("id, min_people, max_people")
+    .select("id, min_people, max_people, city_slug, is_demo")
     .eq("code", code)
     .maybeSingle();
   if (!ev) return apiError("not_found", "This plan doesn't exist or was removed.", 404);
@@ -88,6 +89,8 @@ export async function POST(req: Request, { params }: { params: Promise<{ code: s
   }
 
   if (!admin) await recordHits(rules);
+  await track("join_success", { eventId: ev.id, citySlug: ev.city_slug, token, isDemo: ev.is_demo });
+  if (row.r_just_confirmed) await track("event_confirmed", { eventId: ev.id, citySlug: ev.city_slug, token, isDemo: ev.is_demo });
   await saveProfile(token, input).catch((e) => console.error("profile save", e));
 
   const site = siteUrl(req);

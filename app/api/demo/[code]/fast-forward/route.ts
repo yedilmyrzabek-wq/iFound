@@ -5,7 +5,7 @@ import { DateTime } from "luxon";
 import { db } from "@/lib/db";
 import { apiError, badOrigin, originOk, previewBlocked, siteUrl } from "@/lib/http";
 import { isDemoCode } from "@/lib/demo";
-import { notifyCancelled } from "@/lib/email/notify";
+import { notifyCancelled, notifyReminder } from "@/lib/email/notify";
 
 export const dynamic = "force-dynamic";
 
@@ -15,13 +15,21 @@ export async function POST(req: Request, { params }: { params: Promise<{ code: s
   if (blocked) return blocked;
   const { code } = await params;
   if (!isDemoCode(code)) return apiError("forbidden", "Demo controls work only on demo plans.", 403);
-  const { data: ev } = await db().from("events").select("id, is_demo, status, duration_minutes").eq("code", code).maybeSingle();
+  const { data: ev } = await db().from("events").select("id, is_demo, status, duration_minutes, starts_at").eq("code", code).maybeSingle();
   if (!ev?.is_demo) return apiError("not_found", "Demo plan not found.", 404);
   const now = DateTime.utc();
   let startsAt: string;
   if (ev.status === "filling") startsAt = now.plus({ minutes: 119 }).toISO()!; // start − 2 h is now in the past
-  else if (ev.status === "confirmed") startsAt = now.minus({ minutes: ev.duration_minutes + 1 }).toISO()!;
-  else return apiError("closed", "This demo plan is already over.", 410);
+  else if (ev.status === "confirmed") {
+    // Step 1: the day before, so the real reminder goes out (only to real emails). Step 2: after the plan.
+    const hoursLeft = DateTime.fromISO(ev.starts_at, { zone: "utc" }).diff(now, "hours").hours;
+    if (hoursLeft > 26) {
+      await db().from("events").update({ starts_at: now.plus({ hours: 24 }).toISO()! }).eq("id", ev.id);
+      await notifyReminder(ev.id, siteUrl(req)).catch((e) => console.error(e));
+      return NextResponse.json({ ok: true, step: "day_before" });
+    }
+    startsAt = now.minus({ minutes: ev.duration_minutes + 1 }).toISO()!;
+  } else return apiError("closed", "This demo plan is already over.", 410);
   await db().from("events").update({ starts_at: startsAt }).eq("id", ev.id);
   const { data } = await db().rpc("sweep_events");
   const rows = (data ?? []) as { r_event_id: string; r_action: string }[];

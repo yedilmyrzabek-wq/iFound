@@ -12,9 +12,9 @@ const archivo = Archivo({
 
 export const metadata: Metadata = {
   metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000"),
-  title: { default: "iFound — plans that only happen when enough people are in", template: "%s · iFound" },
+  title: { default: "iFound — meet people in your new city, without showing up alone", template: "%s · iFound" },
   description:
-    "Pick a plan near you and tap I'm in. If enough people join, it's on. If not, it's quietly called off — nobody shows up alone.",
+    "New in town? Pick a plan near you and tap I'm in. If enough people join, it's on. If not, it's quietly called off — you never walk into an empty room.",
   openGraph: { siteName: "iFound", type: "website" },
 };
 

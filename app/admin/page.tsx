@@ -5,6 +5,7 @@ import { db } from "@/lib/db";
 import { isAdmin } from "@/lib/http";
 import { formatShort } from "@/lib/tz";
 import { AdminButton } from "@/components/AdminButton";
+import { funnel } from "@/lib/analytics";
 import { Footer, Header } from "@/components/Header";
 
 export const dynamic = "force-dynamic";
@@ -63,6 +64,12 @@ export default async function AdminPage({ searchParams }: { searchParams: Promis
   ]);
 
   const allPlans = await count("events");
+  const f = await funnel();
+  const FUNNELS: [string, [string, string][]][] = [
+    ["Join", [["event_view", "Plan viewed"], ["join_click", "Tapped I'm in"], ["join_success", "Joined"], ["event_confirmed", "Plan confirmed"]]],
+    ["Swipe", [["swipe_view", "Deck opened"], ["swipe_right", "Swiped right"], ["swipe_left", "Swiped left"], ["swipe_undo", "Undo"], ["deck_end", "Reached the end"]]],
+    ["Create & pay", [["create_start", "Opened Start a plan"], ["create_success", "Plan created"], ["paywall_shown", "Hit the paywall"], ["checkout_start", "Opened checkout"], ["checkout_success", "Paid (test)"], ["repeat_created", "Ran a plan again"]]],
+  ];
   const byCity = new Map<string, number>();
   for (const w of waitlist.data ?? []) byCity.set(w.city.toLowerCase(), (byCity.get(w.city.toLowerCase()) ?? 0) + 1);
   const stats: [string, string | number][] = [
@@ -106,6 +113,39 @@ export default async function AdminPage({ searchParams }: { searchParams: Promis
               Waitlist by city: {[...byCity.entries()].sort((a, b) => b[1] - a[1]).map(([c, n]) => `${c} ${n}`).join(" · ")}
             </p>
           )}
+        </section>
+
+        <section aria-labelledby="funnel" className="mt-10">
+          <h2 id="funnel" className="text-[18px] font-bold">Funnel (real events, demo plans excluded)</h2>
+          <div className="mt-3 grid gap-4 lg:grid-cols-3">
+            {FUNNELS.map(([title, steps]) => (
+              <table key={title} className="w-full border-collapse rounded-[10px] bg-surface text-left text-[14px]">
+                <caption className="pb-2 text-left text-[15px] font-semibold">{title}</caption>
+                <thead>
+                  <tr className="border-b border-line-strong text-ink-2">
+                    <th className="py-2 pl-3 font-medium">Step</th>
+                    <th className="py-2 font-medium">Events</th>
+                    <th className="py-2 font-medium">People</th>
+                    <th className="py-2 pr-3 font-medium">vs first</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {steps.map(([key, label]) => {
+                    const row = f.get(key);
+                    const base = f.get(steps[0][0])?.people ?? 0;
+                    return (
+                      <tr key={key} className="border-b border-line">
+                        <td className="py-2 pl-3">{label}</td>
+                        <td className="py-2 tabular-nums">{row?.total ?? 0}</td>
+                        <td className="py-2 tabular-nums">{row?.people ?? 0}</td>
+                        <td className="py-2 pr-3 tabular-nums">{base ? `${Math.round(((row?.people ?? 0) / base) * 100)}%` : "—"}</td>
+                      </tr>
+                    );
+                  })}
+                </tbody>
+              </table>
+            ))}
+          </div>
         </section>
 
         <section aria-labelledby="reports" className="mt-10">

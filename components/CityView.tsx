@@ -6,6 +6,8 @@ import { ACTIVITY_META, CATEGORY_LABEL } from "@/lib/activities";
 import { formatCard, zoneLongName } from "@/lib/tz";
 import { ACTIVITIES, type Activity, type DayFilter, type DeckResponse, type EventSummary, type MeProfile, type Venue } from "@/lib/types";
 import { SwipeDeck } from "./SwipeDeck";
+import { NewInTownBanner } from "./NewInTownBanner";
+import { TrackView } from "./TrackView";
 import { EventCard } from "./EventCard";
 import { Icon } from "./Icon";
 import { MapView, type MapPin } from "./map";
@@ -146,6 +148,9 @@ export function CityView({
           <Icon name="plus" size={18} /> Start a plan
         </Link>
       </div>
+
+      <TrackView name="city_view" city={city.slug} />
+      <NewInTownBanner city={shortCity} />
 
       <div role="tablist" aria-label="View" className="mt-5 inline-flex rounded-full border border-line-strong bg-surface p-1">
         {(["swipe", "list", "map"] as const).map((v) => {

@@ -3,6 +3,7 @@ import type { Metadata } from "next";
 import { Footer, Header } from "@/components/Header";
 import { userToken } from "@/lib/http";
 import { linkCheckoutSession } from "@/lib/stripe";
+import { track } from "@/lib/analytics";
 
 export const dynamic = "force-dynamic";
 export const metadata: Metadata = { title: "Welcome to iFound+", robots: { index: false } };
@@ -12,7 +13,9 @@ export default async function PlusSuccess({ searchParams }: { searchParams: Prom
   const { session_id } = await searchParams;
   let ok = false;
   if (session_id && /^cs_[A-Za-z0-9_]+$/.test(session_id)) {
-    ok = (await linkCheckoutSession(session_id, await userToken()).catch(() => ({ ok: false }))).ok;
+    const token = await userToken();
+    ok = (await linkCheckoutSession(session_id, token).catch(() => ({ ok: false }))).ok;
+    if (ok) await track("checkout_success", { token });
   }
   return (
     <>

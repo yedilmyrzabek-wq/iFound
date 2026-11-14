@@ -82,6 +82,10 @@ export interface EventDetail extends EventSummary {
   };
   /** Present only when viewer.canSeeParticipants; otherwise the server sends nothing. */
   participants: PersonPublic[] | null;
+  /** Next week's copy of this plan, if it was run again. */
+  repeatCode: string | null;
+  /** The plan this one repeats, if any. */
+  repeatOfCode: string | null;
 }
 
 export interface CreateEventInput {

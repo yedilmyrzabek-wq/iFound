@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { apiError, badOrigin, originOk, previewBlocked, siteUrl, userToken } from "@/lib/http";
 import { stripe } from "@/lib/stripe";
+import { track } from "@/lib/analytics";
 
 export const dynamic = "force-dynamic";
 export const runtime = "nodejs";
@@ -26,5 +27,6 @@ export async function POST(req: Request) {
     adaptive_pricing: { enabled: false },
     locale: "en",
   });
+  await track("checkout_start", { token });
   return NextResponse.json({ url: session.url });
 }

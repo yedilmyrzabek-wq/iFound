@@ -13,6 +13,7 @@ import { activityLabel } from "@/lib/activities";
 import { hasProfanity } from "@/lib/profanity";
 import { notifyHostCreated } from "@/lib/email/notify";
 import { saveProfile } from "@/lib/profile";
+import { track } from "@/lib/analytics";
 import { ACTIVITIES, type Activity, type DayFilter } from "@/lib/types";
 
 export const dynamic = "force-dynamic";
@@ -91,7 +92,8 @@ export async function POST(req: Request) {
     if (!asVenue) {
       const used = await ownPlansLast30Days(token, input.host.email);
       if (used >= 1 && !(await isSubscriber(token)).active) {
-        return apiError("upgrade_required", "Free includes 1 plan a month. Get iFound+ for unlimited plans — $8/month.", 402);
+        await track("paywall_shown", { citySlug: city.slug, token });
+        return apiError("upgrade_required", "Free includes 1 plan a month. iFound+ — $8/month — lets you run plans every week with your crew.", 402);
       }
     }
   }
@@ -165,6 +167,7 @@ export async function POST(req: Request) {
   if (!eventId) return apiError("server_error", "Something went wrong. Please try again.", 500);
 
   if (!admin) await recordHits([RULES.createToken(token), ip ? RULES.createIp(ip) : null]);
+  await track("create_success", { eventId, citySlug: city.slug, token, isDemo: admin && input.isDemo });
   if (!asVenue) {
     await saveProfile(token, { name: input.host.name, email: input.host.email, photoPath: input.host.photoPath }).catch((e) =>
       console.error("profile save", e),

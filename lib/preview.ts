@@ -78,6 +78,8 @@ function fixtures(): EventDetail[] {
       host: { name: host, photoUrl: null },
       viewer: { role: "guest", canSeeParticipants: false, canJoin: p.status === "filling" || (p.status === "confirmed" && p.count < p.maxPeople) },
       participants: null,
+      repeatCode: null,
+      repeatOfCode: null,
       ...p,
     };
   };

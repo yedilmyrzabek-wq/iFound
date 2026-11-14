@@ -3,7 +3,7 @@ import { NextResponse } from "next/server";
 import { timingSafeEqual } from "node:crypto";
 import { db } from "@/lib/db";
 import { siteUrl } from "@/lib/http";
-import { notifyCancelled } from "@/lib/email/notify";
+import { notifyCancelled, notifyReminder } from "@/lib/email/notify";
 
 export const dynamic = "force-dynamic";
 export const maxDuration = 60;
@@ -25,8 +25,13 @@ export async function GET(req: Request) {
   const cancelled = rows.filter((r) => r.r_action === "cancelled_unfilled");
   // Idempotent via email_log, so a retried sweep never double-sends.
   await Promise.all(cancelled.map((r) => notifyCancelled(r.r_event_id, "unfilled", site).catch((e) => console.error(e))));
+  // Day-before reminders for confirmed plans starting in 20-26 h. email_log makes reruns send nothing new.
+  const { data: due } = await db().rpc("due_reminders");
+  const dueIds = ((due ?? []) as { r_event_id: string }[]).map((r) => r.r_event_id);
+  await Promise.all(dueIds.map((id) => notifyReminder(id, site).catch((e) => console.error(e))));
   return NextResponse.json({
     cancelled: cancelled.length,
     completed: rows.filter((r) => r.r_action === "completed").length,
+    reminders: dueIds.length,
   });
 }

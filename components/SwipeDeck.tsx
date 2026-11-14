@@ -13,6 +13,7 @@ import { JoinSheet } from "./JoinSheet";
 import { Bulbs, LetterLine } from "./Letterboard";
 import { DemoChip } from "./StatusChip";
 import { useNow } from "./useNow";
+import { track } from "./track";
 
 type Day = "today" | "tomorrow" | "week";
 const DAYS: { v: Day; label: string }[] = [
@@ -71,6 +72,10 @@ export function SwipeDeck({
   const topRef = useRef<CardHandle>(null);
   const sectionRef = useRef<HTMLElement>(null);
   const shortCity = city.name.split(",")[0];
+
+  useEffect(() => {
+    track("swipe_view", { city: city.slug });
+  }, [city.slug]);
 
   // Filter out previously skipped plans once we can read localStorage (client only).
   useEffect(() => {
@@ -166,6 +171,7 @@ export function SwipeDeck({
   }
 
   async function decide(card: DeckCard, dir: "left" | "right"): Promise<Outcome> {
+    track(dir === "right" ? "swipe_right" : "swipe_left", { code: card.code });
     if (dir === "left") {
       writeSkipped(city.slug, [...readSkipped(city.slug).filter((c) => c !== card.code), card.code]);
       return "remove";
@@ -175,6 +181,7 @@ export function SwipeDeck({
   }
 
   async function undo(code: string) {
+    track("swipe_undo", { code });
     setToast(null);
     const r = await fetch(`/api/events/${code}/leave`, { method: "POST", headers: { "Content-Type": "application/json" }, body: "{}" }).catch(() => null);
     if (r?.ok) {
@@ -206,6 +213,9 @@ export function SwipeDeck({
 
   const visible = cards.slice(0, 3);
   const empty = skippedReady && !loading && cards.length === 0;
+  useEffect(() => {
+    if (empty) track("deck_end", { city: city.slug });
+  }, [empty, city.slug]);
 
   return (
     <section ref={sectionRef} aria-label={`Swipe plans in ${shortCity}`} className="mx-auto w-full max-w-[420px]">

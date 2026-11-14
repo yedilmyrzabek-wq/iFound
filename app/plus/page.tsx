@@ -12,9 +12,11 @@ export const dynamic = "force-dynamic";
 export const metadata: Metadata = { title: "iFound+" };
 
 const ROWS: [string, string, string][] = [
-  ["See plans and join", "Unlimited", "Unlimited"],
+  ["Run a plan again every week with the same crew", "—", "Yes"],
+  ["Your crew gets invited first", "—", "Yes"],
   ["Start your own plans", "1 a month", "Unlimited"],
   ["See who's going before you join", "—", "Yes"],
+  ["See plans and join", "Unlimited", "Unlimited"],
 ];
 
 export default async function PlusPage() {
@@ -32,8 +34,8 @@ export default async function PlusPage() {
           <LetterLine text="iFound+" style={{ fontSize: "min(5rem, 22cqw)" }} />
           <LetterLine text="$8 a month" className="mt-1 text-[clamp(1.2rem,8cqw,2.2rem)] [&_.letter]:text-bulb" />
         </div>
-        <h1 className="mt-6 text-[28px] leading-tight font-extrabold tracking-[-0.02em]">Start as many plans as you like.</h1>
-        <p className="mt-2 text-[17px] text-ink-2">And see who's going before you tap I'm in. Places are always free on iFound.</p>
+        <h1 className="mt-6 text-[28px] leading-tight font-extrabold tracking-[-0.02em]">Turn one good night into a weekly crew.</h1>
+        <p className="mt-2 text-[17px] text-ink-2">Run your plan again every week with the people who came, start as many plans as you like, and see who's going before you tap I'm in.</p>
 
         <table className="mt-6 w-full border-collapse text-left text-[15px]">
           <thead>
@@ -64,7 +66,7 @@ export default async function PlusPage() {
           ) : (
             <PlusButton />
           )}
-          <p className="mt-3 text-center text-[14px] text-ink-2">$8/month, renews monthly. Cancel anytime.</p>
+          <p className="mt-3 text-center text-[14px] text-ink-2">$8/month. Cancel anytime. Places never pay — iFound+ is for people.</p>
           {!plus.active && (
             <p className="mt-1 text-center text-[14px]">
               <a href="/plus/restore" className="font-semibold underline">

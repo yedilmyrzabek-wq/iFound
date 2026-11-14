@@ -8,6 +8,7 @@ import { createEventSchema, defaultMax } from "@/lib/validation";
 import { ACTIVITIES, DURATIONS, type Activity, type ApiError, type CreateEventResponse, type Venue } from "@/lib/types";
 import { Icon } from "./Icon";
 import { PhotoPicker } from "./PhotoPicker";
+import { TrackView } from "./TrackView";
 import { MapView, type MapPin } from "./map";
 
 interface CityInfo {
@@ -164,6 +165,7 @@ export function NewPlanForm({
 
   return (
     <main className="mx-auto max-w-2xl px-4 pt-5 pb-32">
+      <TrackView name="create_start" city={city.slug} />
       <h1 className="text-[32px] leading-none font-extrabold tracking-[-0.02em]">Start a plan</h1>
       <p className="mt-2 text-[16px] text-ink-2">It only happens if enough people are in. If not, it's quietly called off.</p>
 
@@ -453,7 +455,7 @@ export function NewPlanForm({
             <h2 id="pw-title" className="text-[22px] font-bold">
               You've used your free plan this month
             </h2>
-            <p className="mt-2 text-[16px] text-ink-2">Free includes 1 plan a month. Get iFound+ for unlimited plans — $8/month.</p>
+            <p className="mt-2 text-[16px] text-ink-2">Free includes 1 plan a month. iFound+ — $8/month — lets you run plans every week with your crew.</p>
             <div className="mt-5 flex flex-col gap-2">
               <Link href="/plus" className="flex h-[52px] items-center justify-center rounded-full bg-bulb text-[17px] font-bold text-ink">
                 Get iFound+

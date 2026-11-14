@@ -168,3 +168,63 @@ export async function notifyCancelled(eventId: string, reason: "unfilled" | "hos
   const key = reason === "unfilled" ? "cancelled_unfilled" : "cancelled_host";
   await Promise.all(people.map((p) => sendOnce({ dedupeKey: `${key}:${c.id}:${p.id}`, to: p.email, ...m })));
 }
+
+/** "See you tomorrow" to every active participant of a confirmed plan (deduped: one per person per plan). */
+export async function notifyReminder(eventId: string, site: string) {
+  const c = await loadCtx(eventId, site);
+  if (!c) return;
+  const people = await activeParticipants(eventId);
+  const whenShort = DateTime.fromISO(c.startsAt).setZone(c.timezone).toFormat("ccc h:mm a") + ` ${zoneAbbr(c.timezone)}`;
+  await Promise.all(
+    people.map((p) =>
+      sendOnce({
+        dedupeKey: `reminder:${c.id}:${p.id}`,
+        to: p.email,
+        ...T.reminderDayBefore({ ...plan(c), count: c.count, whenShort, leaveUrl: leaveUrl(c, p.id) }),
+        attachments: [ics(c)],
+      }),
+    ),
+  );
+}
+
+/** Invites everyone who was in the source plan (except the host) to next week's copy. */
+export async function notifyRepeat(sourceEventId: string, newEventId: string, site: string) {
+  const c = await loadCtx(newEventId, site);
+  if (!c) return;
+  const { data } = await db()
+    .from("participants")
+    .select("id, email, is_host, display_name")
+    .eq("event_id", sourceEventId)
+    .is("left_at", null);
+  const rows = (data ?? []) as { id: string; email: string; is_host: boolean; display_name: string }[];
+  const hostName = rows.find((r) => r.is_host)?.display_name ?? "The host";
+  await Promise.all(
+    rows
+      .filter((r) => !r.is_host)
+      .map((r) => sendOnce({ dedupeKey: `repeat_invite:${c.id}:${r.id}`, to: r.email, ...T.repeatInvite({ ...plan(c), hostName }) })),
+  );
+}
+
+/** The exact email a participant would get, rendered for the in-app demo preview (no recipient shown). */
+export async function previewEmail(eventId: string, type: "confirmed" | "joined" | "reminder" | "repeat", site: string) {
+  const c = await loadCtx(eventId, site);
+  if (!c) return null;
+  const whenShort = DateTime.fromISO(c.startsAt).setZone(c.timezone).toFormat("ccc h a") + ` ${zoneAbbr(c.timezone)}`;
+  const leave = `${c.site}/l/preview`;
+  switch (type) {
+    case "confirmed":
+      return T.confirmed({ ...plan(c), count: c.count, whenShort, leaveUrl: leave });
+    case "reminder":
+      return T.reminderDayBefore({ ...plan(c), count: c.count, whenShort, leaveUrl: leave });
+    case "repeat":
+      return T.repeatInvite({ ...plan(c), hostName: "Riley" });
+    default:
+      return T.joinedFilling({
+        ...plan(c),
+        count: c.count,
+        minPeople: c.minPeople,
+        deadline: formatDeadline(fillDeadline(c.startsAt), c.timezone),
+        leaveUrl: leave,
+      });
+  }
+}

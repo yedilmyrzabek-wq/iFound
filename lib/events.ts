@@ -12,7 +12,7 @@ import type { Activity, CancelReason, City, DayFilter, EventDetail, EventStatus,
 const EVENT_COLUMNS = `
   id, code, city_slug, venue_id, place_name, place_lat, place_lng, activity, activity_other,
   title, description, starts_at, duration_minutes, min_people, max_people, status,
-  participant_count, cancel_reason, is_demo, hidden, host_token, venue_claim_id,
+  participant_count, cancel_reason, is_demo, hidden, host_token, venue_claim_id, repeat_of,
   venue:venues!events_venue_id_fkey ( id, name, address, lat, lng ),
   claim:venue_claims!events_venue_claim_id_fkey ( verified_at ),
   city:cities!events_city_slug_fkey ( name, timezone )
@@ -41,6 +41,7 @@ interface EventRow {
   hidden: boolean;
   host_token: string;
   venue_claim_id: string | null;
+  repeat_of: string | null;
   venue: { id: string; name: string; address: string | null; lat: number; lng: number } | null;
   claim: { verified_at: string | null } | null;
   city: { name: string; timezone: string } | null;
@@ -206,7 +207,11 @@ export async function getEventDetail(code: string, viewerToken: string): Promise
   const visiblePhotos = (people ?? [])
     .filter((p) => p.photo_path && !p.photo_hidden && (canSeeParticipants || p.is_host))
     .map((p) => p.photo_path as string);
-  const urls = await signedPhotoUrls(visiblePhotos);
+  const [urls, { data: nextWeek }, { data: prevWeek }] = await Promise.all([
+    signedPhotoUrls(visiblePhotos),
+    db().from("events").select("code").eq("repeat_of", row.id).maybeSingle(),
+    row.repeat_of ? db().from("events").select("code").eq("id", row.repeat_of).maybeSingle() : Promise.resolve({ data: null }),
+  ]);
   const photoOf = (p: { photo_path: string | null; photo_hidden: boolean }) =>
     p.photo_path && !p.photo_hidden ? urls.get(p.photo_path) ?? null : null;
 
@@ -225,6 +230,8 @@ export async function getEventDetail(code: string, viewerToken: string): Promise
     participants: canSeeParticipants
       ? (people ?? []).map((p) => ({ id: p.id, name: p.display_name, photoUrl: photoOf(p), isHost: p.is_host }))
       : null,
+    repeatCode: nextWeek?.code ?? null,
+    repeatOfCode: prevWeek?.code ?? null,
   };
 }
 

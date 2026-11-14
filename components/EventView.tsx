@@ -1,6 +1,6 @@
 "use client";
 import Link from "next/link";
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import useSWR from "swr";
 import { DateTime } from "luxon";
 import { ACTIVITY_META } from "@/lib/activities";
@@ -15,6 +15,8 @@ import { MapView } from "./map";
 import { useNow, useViewerZone } from "./useNow";
 import { ReportButton } from "./ReportButton";
 import { DemoControls } from "./DemoControls";
+import { RepeatCard } from "./RepeatCard";
+import { track } from "./track";
 
 const SITE = (process.env.NEXT_PUBLIC_SITE_URL ?? "").replace(/\/$/, "");
 
@@ -61,6 +63,9 @@ export function EventView({
   const [toast, setToast] = useState<string | null>(null);
   const [confirming, setConfirming] = useState<"leave" | "cancel" | null>(null);
   const [actionError, setActionError] = useState<string | null>(null);
+  useEffect(() => {
+    track("event_view", { code: initial.code });
+  }, [initial.code]);
 
   const closeSheet = useCallback(() => setSheet(false), []);
   const onJoined = useCallback(
@@ -92,6 +97,7 @@ export function EventView({
   const url = typeof window !== "undefined" ? window.location.origin + `/e/${e.code}` : `/e/${e.code}`;
 
   async function share() {
+    track("share_click", { code: e.code });
     const text = e.status === "filling" ? `${e.title} — it needs ${needed} more. Tap I'm in:` : `${e.title} — it's on. Join us:`;
     try {
       if (navigator.share) {
@@ -140,7 +146,7 @@ export function EventView({
         </div>
       )}
 
-      {e.isDemo && /^demo[a-z0-9]{4}$/.test(e.code) && <DemoControls code={e.code} status={e.status} onChange={() => void mutate()} />}
+      {e.isDemo && /^demo[a-z0-9]{4}$/.test(e.code) && <DemoControls code={e.code} status={e.status} startsAt={e.startsAt} onChange={() => void mutate()} />}
 
       <div className="relative mt-4">
         <Counter status={e.status} cancelReason={e.cancelReason} count={e.count} min={e.minPeople} max={e.maxPeople} celebrate={celebrate} />
@@ -199,6 +205,17 @@ export function EventView({
           </dd>
         </div>
       </dl>
+
+      {(e.status === "confirmed" || e.status === "completed") &&
+        (e.viewer.role === "host" || /^demo[a-z0-9]{4}$/.test(e.code) || e.repeatCode) && <RepeatCard code={e.code} repeatCode={e.repeatCode} />}
+      {e.repeatOfCode && (
+        <p className="mt-4 text-[14px] text-ink-2">
+          A weekly plan —{" "}
+          <Link href={`/e/${e.repeatOfCode}`} className="font-semibold text-ink underline">
+            see last week's
+          </Link>
+        </p>
+      )}
 
       {e.description && <p className="mt-5 text-[16px] leading-relaxed whitespace-pre-line">{e.description}</p>}
 
@@ -323,7 +340,10 @@ export function EventView({
             </p>
           ) : e.viewer.canJoin ? (
             <button
-              onClick={() => setSheet(true)}
+              onClick={() => {
+                track("join_click", { code: e.code });
+                setSheet(true);
+              }}
               className="flex h-[52px] flex-1 items-center justify-center rounded-full bg-bulb text-[18px] font-extrabold text-ink shadow-[0_1px_0_rgb(0_0_0/0.15),0_8px_20px_-8px_rgb(227_164_0/0.8)] transition-[transform,background-color] hover:bg-[#ffd25c] active:scale-[0.98]"
             >
               I'm in
