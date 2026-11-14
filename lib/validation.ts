@@ -42,6 +42,8 @@ export const createEventSchema = z
     asVenue: z
       .object({ enabled: z.boolean(), email: email.nullable().default(null) })
       .default({ enabled: false, email: null }),
+    /** Honored only for admins (TZ §8.9): team-created plans carry the Demo badge. */
+    isDemo: z.boolean().default(false),
   })
   .superRefine((v, ctx) => {
     if (v.maxPeople < v.minPeople) {

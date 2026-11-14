@@ -35,6 +35,7 @@ export function NewPlanForm({
   preVenueId,
   bounds,
   asVenueDefault = false,
+  admin = false,
 }: {
   city: CityInfo;
   cities: { slug: string; name: string }[];
@@ -42,6 +43,7 @@ export function NewPlanForm({
   preVenueId: string | null;
   bounds: { min: string; max: string };
   asVenueDefault?: boolean;
+  admin?: boolean;
 }) {
   const router = useRouter();
   const [activity, setActivity] = useState<Activity | null>(null);
@@ -64,6 +66,7 @@ export function NewPlanForm({
   const [is18, setIs18] = useState(false);
   const [asVenue, setAsVenue] = useState(asVenueDefault && !!preVenueId);
   const [venueEmail, setVenueEmail] = useState("");
+  const [isDemo, setIsDemo] = useState(admin);
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [formError, setFormError] = useState<string | null>(null);
   const [paywall, setPaywall] = useState(false);
@@ -111,6 +114,7 @@ export function NewPlanForm({
       minPeople: min,
       maxPeople: effectiveMax,
       host: { name, email, photoPath: null, is18 },
+      isDemo: admin && isDemo,
       asVenue: { enabled: asVenue && !somewhereElse && !!venueId, email: asVenue && !somewhereElse && venueId ? venueEmail : null },
     };
     const parsed = createEventSchema.safeParse(body);
@@ -388,6 +392,13 @@ export function NewPlanForm({
           </label>
           {err("is18")}
         </section>
+
+        {admin && (
+          <label className="flex min-h-11 items-center gap-3 rounded-[10px] border border-dashed border-line-strong bg-surface px-4">
+            <input type="checkbox" className="size-5 accent-[#16171a]" checked={isDemo} onChange={(e) => setIsDemo(e.target.checked)} />
+            <span className="text-[15px] font-semibold">Demo plan (team-created, shows the Demo badge, no limits)</span>
+          </label>
+        )}
 
         {venue && !somewhereElse && (
           <section className="rounded-[10px] border border-line bg-surface p-4" data-field="asVenue">

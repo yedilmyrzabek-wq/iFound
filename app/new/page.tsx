@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { db } from "@/lib/db";
 import { previewMode } from "@/lib/preview";
+import { isAdmin } from "@/lib/http";
 import { getCity, listCities, listVenues } from "@/lib/events";
 import { createBounds, nowUtc } from "@/lib/tz";
 import { NewPlanForm } from "@/components/NewPlanForm";
@@ -34,6 +35,7 @@ export default async function NewPage({ searchParams }: { searchParams: Promise<
         preVenueId={preVenueId}
         bounds={createBounds(city.timezone, nowUtc())}
         asVenueDefault={sp.asVenue === "1"}
+        admin={!previewMode() && (await isAdmin())}
       />
       <Footer />
     </>

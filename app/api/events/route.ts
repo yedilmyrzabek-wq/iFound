@@ -149,7 +149,7 @@ export async function POST(req: Request) {
       p_host_email: asVenue ? input.asVenue.email : input.host.email,
       p_host_photo: input.host.photoPath,
       p_venue_claim_id: claimId,
-      p_is_demo: false,
+      p_is_demo: admin && input.isDemo,
       p_ip: ip,
     });
     if (error) {
