@@ -12,3 +12,9 @@ One line each: time (Asia/Almaty), decision, why.
 - 2026-11-14 16:10 — Join returns 409 `already_joined` on a unique-index race (23505), the same meaning as the DB check.
 - 2026-11-14 16:15 — Venue posting UI is hidden until P2. The API already creates the `venue_claims` row; the verify email comes in P2.
 - 2026-11-14 16:15 — Report thresholds are counted over unresolved reports. Reports are idempotent per token via the unique indexes.
+- 2026-11-14 23:30 — Swipe deck migration is `004_guest_profiles.sql`, not `003_…` as in TZ v1.1: 003 was already applied (cities), and applied migrations are never edited.
+- 2026-11-14 23:30 — "This week" in the deck = now → 7 days ahead, in the city's zone. `first` is ignored silently when the plan isn't joinable for the viewer.
+- 2026-11-14 23:45 — Sweep scheduler: Supabase `pg_cron` + `pg_net` every 10 min (TZ §17 allows it). No external account needed; the secret lives only in the DB job, never in the repo.
+- 2026-11-14 23:50 — Venue claims are reused per venue + email, so one manage link covers every plan that person posted for the place.
+- 2026-11-15 00:10 — Test 10 (paywall) runs over HTTP against a live server (`TEST_BASE_URL`), because the limit logic is in the API layer by design (the DB functions stay pure threshold logic).
+- 2026-11-15 00:20 — Avatars: the client crops to 256×256 WebP; the server only accepts real WebP (magic bytes), ≤300 KB, into the private bucket.
