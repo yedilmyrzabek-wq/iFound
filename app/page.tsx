@@ -30,8 +30,8 @@ export default async function Home() {
                 alone.
               </p>
               <div className="mt-7 flex flex-wrap gap-2">
-                <Link href="/c/austin" className="inline-flex h-[52px] items-center rounded-full bg-bulb px-6 text-[17px] font-extrabold text-ink shadow-[0_1px_0_rgb(0_0_0/0.15),0_8px_20px_-8px_rgb(227_164_0/0.8)] hover:bg-[#ffd25c]">
-                  See plans in Austin
+                <Link href="/c/austin/swipe" className="inline-flex h-[52px] items-center rounded-full bg-bulb px-6 text-[17px] font-extrabold text-ink shadow-[0_1px_0_rgb(0_0_0/0.15),0_8px_20px_-8px_rgb(227_164_0/0.8)] hover:bg-[#ffd25c]">
+                  Swipe plans in Austin
                 </Link>
                 <Link href="/new" className="inline-flex h-[52px] items-center rounded-full border border-line-strong bg-surface px-6 text-[17px] font-bold">
                   Start a plan

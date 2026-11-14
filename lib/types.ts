@@ -12,7 +12,7 @@ export type VenueCategory = (typeof VENUE_CATEGORIES)[number];
 export const DURATIONS = [60, 90, 120, 180] as const;
 export type Duration = (typeof DURATIONS)[number];
 
-export type DayFilter = "today" | "tomorrow" | "weekend" | "all";
+export type DayFilter = "today" | "tomorrow" | "weekend" | "week" | "all";
 
 export interface City {
   slug: string;
@@ -137,9 +137,26 @@ export type ApiErrorCode =
   | "not_joined"
   | "host_must_cancel"
   | "forbidden"
+  | "profile_required"
   | "server_error";
 
 export interface ApiError {
   error: ApiErrorCode;
   message: string;
+}
+
+export interface DeckCard extends EventSummary {
+  timezone: string;
+  host: { name: string; photoUrl: string | null } | null;
+}
+
+export interface DeckResponse {
+  cards: DeckCard[];
+  nextCursor: number | null;
+}
+
+export interface MeProfile {
+  name: string;
+  email: string;
+  photoPath: string | null;
 }

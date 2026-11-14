@@ -225,3 +225,79 @@ export async function getEventDetail(code: string, viewerToken: string): Promise
       : null,
   };
 }
+
+/**
+ * Swipe deck (TZ §8.12): open plans with seats where the viewer isn't in and isn't host,
+ * ordered by "fewest people missing" first, then confirmed-with-room by time. `first` pins one plan on top.
+ */
+export async function getDeck(
+  citySlug: string,
+  timezone: string,
+  day: DayFilter,
+  viewerToken: string,
+  first: string | null,
+  cursor: number,
+  pageSize = 10,
+): Promise<{ cards: (EventSummary & { timezone: string; host: { name: string; photoUrl: string | null } | null })[]; nextCursor: number | null }> {
+  const now = nowUtc();
+  const range = dayRange(day, timezone, now);
+  let rows: EventRow[];
+  if (previewMode()) {
+    rows = [];
+  } else {
+    let q = db()
+      .from("events")
+      .select(EVENT_COLUMNS)
+      .eq("city_slug", citySlug)
+      .eq("hidden", false)
+      .in("status", ["filling", "confirmed"])
+      .gte("starts_at", range.from)
+      .order("starts_at", { ascending: true })
+      .limit(300);
+    if (range.to) q = q.lt("starts_at", range.to);
+    const { data, error } = await q;
+    if (error) throw error;
+    rows = (data ?? []) as unknown as EventRow[];
+    if (first && !rows.some((r) => r.code === first)) {
+      const pinned = await getEventRow(first);
+      if (pinned && pinned.city_slug === citySlug && !pinned.hidden) rows.push(pinned);
+    }
+  }
+
+  const ids = rows.map((r) => r.id);
+  const mine = new Set<string>();
+  const hosts = new Map<string, string>();
+  if (ids.length) {
+    const [{ data: myRows }, { data: hostRows }] = await Promise.all([
+      db().from("participants").select("event_id").in("event_id", ids).eq("user_token", viewerToken).is("left_at", null),
+      db().from("participants").select("event_id, display_name").in("event_id", ids).eq("is_host", true).is("left_at", null),
+    ]);
+    for (const r of myRows ?? []) mine.add(r.event_id);
+    for (const r of hostRows ?? []) hosts.set(r.event_id, r.display_name);
+  }
+
+  const eligible = rows
+    .filter((r) => r.host_token !== viewerToken && !mine.has(r.id))
+    .map((r) => ({ row: r, s: toSummary(r, now) }))
+    .filter(({ s }) => isJoinOpen(s.status, s.startsAt, s.count, s.maxPeople, now));
+
+  const filling = eligible
+    .filter(({ s }) => s.status === "filling")
+    .sort((a, b) => a.s.minPeople - a.s.count - (b.s.minPeople - b.s.count) || a.s.startsAt.localeCompare(b.s.startsAt));
+  const confirmed = eligible.filter(({ s }) => s.status === "confirmed").sort((a, b) => a.s.startsAt.localeCompare(b.s.startsAt));
+  let ordered = [...filling, ...confirmed];
+  if (first) {
+    const i = ordered.findIndex(({ s }) => s.code === first);
+    if (i > 0) ordered = [ordered[i], ...ordered.slice(0, i), ...ordered.slice(i + 1)];
+  }
+
+  const page = ordered.slice(cursor, cursor + pageSize);
+  return {
+    cards: page.map(({ row, s }) => ({
+      ...s,
+      timezone: row.city?.timezone ?? timezone,
+      host: row.venue_claim_id ? null : hosts.has(row.id) ? { name: hosts.get(row.id)!, photoUrl: null } : null,
+    })),
+    nextCursor: cursor + pageSize < ordered.length ? cursor + pageSize : null,
+  };
+}

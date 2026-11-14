@@ -5,6 +5,7 @@ import { RULES, recordHits, underLimits } from "@/lib/limits";
 import { joinSchema } from "@/lib/validation";
 import { hasProfanity } from "@/lib/profanity";
 import { notifyJoin } from "@/lib/email/notify";
+import { getProfile, saveProfile } from "@/lib/profile";
 import type { EventStatus, JoinResponse, JoinResult } from "@/lib/types";
 
 export const dynamic = "force-dynamic";
@@ -29,12 +30,20 @@ export async function POST(req: Request, { params }: { params: Promise<{ code: s
   } catch {
     return apiError("invalid_input", "Please check the form.", 400);
   }
-  const parsed = joinSchema.safeParse(body);
-  if (!parsed.success) return apiError("invalid_input", parsed.error.issues[0]?.message ?? "Please check the form.", 400);
-  const input = parsed.data;
-  if (hasProfanity(input.name)) return apiError("invalid_input", "Please use your real first name.", 400);
-
   const token = await userToken();
+  let input: { name: string; email: string; photoPath: string | null };
+  if ((body as { useSavedProfile?: unknown })?.useSavedProfile === true) {
+    // One-tap join from the swipe deck: 18+ was already confirmed in the form that saved this profile.
+    const saved = await getProfile(token);
+    if (!saved) return apiError("profile_required", "Tell us your name and email first.", 400);
+    input = saved;
+  } else {
+    const parsed = joinSchema.safeParse(body);
+    if (!parsed.success) return apiError("invalid_input", parsed.error.issues[0]?.message ?? "Please check the form.", 400);
+    input = parsed.data;
+    if (hasProfanity(input.name)) return apiError("invalid_input", "Please use your real first name.", 400);
+  }
+
   const ip = clientIp(req);
   const admin = await isAdmin();
   const rules = [RULES.joinToken(token), ip ? RULES.joinIp(ip) : null];
@@ -79,6 +88,7 @@ export async function POST(req: Request, { params }: { params: Promise<{ code: s
   }
 
   if (!admin) await recordHits(rules);
+  await saveProfile(token, input).catch((e) => console.error("profile save", e));
 
   const site = siteUrl(req);
   const participantId = row.r_participant_id!;

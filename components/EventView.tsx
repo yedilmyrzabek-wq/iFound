@@ -4,7 +4,7 @@ import { useCallback, useState } from "react";
 import useSWR from "swr";
 import { ACTIVITY_META } from "@/lib/activities";
 import { formatDeadline, formatRange, formatRelative, formatViewerLocal } from "@/lib/tz";
-import type { EventDetail, JoinResponse } from "@/lib/types";
+import type { EventDetail, JoinResponse, MeProfile } from "@/lib/types";
 import { Avatar, LockedAvatar } from "./Avatar";
 import { Counter } from "./Counter";
 import { Icon } from "./Icon";
@@ -20,7 +20,17 @@ const fetcher = async (url: string) => {
   return (await r.json()).event as EventDetail;
 };
 
-export function EventView({ initial, serverNow, justCreated }: { initial: EventDetail; serverNow: string; justCreated: boolean }) {
+export function EventView({
+  initial,
+  serverNow,
+  justCreated,
+  profile = null,
+}: {
+  initial: EventDetail;
+  serverNow: string;
+  justCreated: boolean;
+  profile?: MeProfile | null;
+}) {
   const { data, mutate } = useSWR(`/api/events/${initial.code}`, fetcher, {
     fallbackData: initial,
     refreshInterval: 8000,
@@ -316,7 +326,7 @@ export function EventView({ initial, serverNow, justCreated }: { initial: EventD
         </div>
       )}
 
-      {sheet && <JoinSheet code={e.code} title={e.title} onClose={closeSheet} onJoined={onJoined} />}
+      {sheet && <JoinSheet code={e.code} title={e.title} profile={profile} onClose={closeSheet} onJoined={onJoined} />}
     </main>
   );
 }

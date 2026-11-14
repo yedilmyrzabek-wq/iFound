@@ -12,6 +12,7 @@ import { cityLocalToUtc, nowUtc } from "@/lib/tz";
 import { activityLabel } from "@/lib/activities";
 import { hasProfanity } from "@/lib/profanity";
 import { notifyHostCreated } from "@/lib/email/notify";
+import { saveProfile } from "@/lib/profile";
 import { ACTIVITIES, type Activity, type DayFilter } from "@/lib/types";
 
 export const dynamic = "force-dynamic";
@@ -23,7 +24,7 @@ export async function GET(req: Request) {
   const city = await getCity(url.searchParams.get("city") ?? "");
   if (!city) return apiError("not_found", "We don't know that city yet.", 404);
   const dayParam = url.searchParams.get("day") ?? "all";
-  const day: DayFilter = (["today", "tomorrow", "weekend", "all"] as const).includes(dayParam as DayFilter)
+  const day: DayFilter = (["today", "tomorrow", "weekend", "week", "all"] as readonly string[]).includes(dayParam)
     ? (dayParam as DayFilter)
     : "all";
   const activities = (url.searchParams.get("activity") ?? "")
@@ -164,6 +165,11 @@ export async function POST(req: Request) {
   if (!eventId) return apiError("server_error", "Something went wrong. Please try again.", 500);
 
   if (!admin) await recordHits([RULES.createToken(token), ip ? RULES.createIp(ip) : null]);
+  if (!asVenue) {
+    await saveProfile(token, { name: input.host.name, email: input.host.email, photoPath: input.host.photoPath }).catch((e) =>
+      console.error("profile save", e),
+    );
+  }
 
   const site = siteUrl(req);
   const hostEmail = asVenue ? input.asVenue.email! : input.host.email;

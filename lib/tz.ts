@@ -109,6 +109,8 @@ export function dayRange(filter: DayFilter, timezone: string, nowIso: string): {
       const from = sat < now ? now : sat;
       return { from: iso(from), to: iso(sat.plus({ days: 2 })) };
     }
+    case "week":
+      return { from: iso(now), to: iso(today.plus({ days: 7 })) };
     default:
       return { from: iso(now), to: null };
   }

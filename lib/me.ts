@@ -8,6 +8,7 @@ import { nowUtc } from "./tz";
 import { effectiveStatus } from "./status";
 import type { EventSummary } from "./types";
 import { previewMode } from "./preview";
+import { getProfile } from "./profile";
 
 export interface MyPlan extends EventSummary {
   timezone: string;
@@ -15,12 +16,13 @@ export interface MyPlan extends EventSummary {
 }
 
 export async function getMyPlans(token: string) {
-  if (previewMode()) return { going: [], hosting: [], past: [], plus: { active: false, until: null } };
+  if (previewMode()) return { going: [], hosting: [], past: [], plus: { active: false, until: null }, profile: null };
   const now = nowUtc();
-  const [asParticipant, asHost, plus] = await Promise.all([
+  const [asParticipant, asHost, plus, profile] = await Promise.all([
     db().from("participants").select("event_id, events(code)").eq("user_token", token).is("left_at", null),
     db().from("events").select("code").eq("host_token", token),
     isSubscriber(token),
+    getProfile(token),
   ]);
   const codes = new Set<string>();
   for (const r of (asParticipant.data ?? []) as unknown as { events: { code: string } | null }[]) if (r.events) codes.add(r.events.code);
@@ -63,5 +65,7 @@ export async function getMyPlans(token: string) {
     hosting: plans.filter((p) => open(p) && p.role === "host").sort(byTime),
     past: plans.filter((p) => !open(p)).sort((a, b) => b.startsAt.localeCompare(a.startsAt)),
     plus,
+    // The viewer's own saved profile — showing someone their own email is fine (TZ §8.12).
+    profile,
   };
 }

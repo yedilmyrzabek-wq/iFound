@@ -2,7 +2,7 @@
 // Bottom sheet on phones, centered dialog on wide screens. Three fields, then you're in.
 import { useEffect, useRef, useState } from "react";
 import { joinSchema } from "@/lib/validation";
-import type { ApiError, JoinResponse } from "@/lib/types";
+import type { ApiError, JoinResponse, MeProfile } from "@/lib/types";
 import { Icon } from "./Icon";
 
 export function JoinSheet({
@@ -10,14 +10,18 @@ export function JoinSheet({
   title,
   onClose,
   onJoined,
+  profile = null,
 }: {
   code: string;
   title: string;
   onClose: () => void;
-  onJoined: (r: JoinResponse) => void;
+  onJoined: (r: JoinResponse, saved: MeProfile) => void;
+  /** Saved guest profile (TZ §8.12) — prefills the form. */
+  profile?: MeProfile | null;
 }) {
-  const [name, setName] = useState("");
-  const [email, setEmail] = useState("");
+  const [name, setName] = useState(profile?.name ?? "");
+  const [email, setEmail] = useState(profile?.email ?? "");
+  const [hasSaved, setHasSaved] = useState(!!profile);
   const [is18, setIs18] = useState(false);
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [formError, setFormError] = useState<string | null>(null);
@@ -59,7 +63,7 @@ export function JoinSheet({
         setFormError((body as ApiError).message ?? "Something went wrong. Please try again.");
         return;
       }
-      onJoined(body);
+      onJoined(body, { name: parsed.data.name, email: parsed.data.email, photoPath: null });
     } catch {
       setFormError("No connection. Check your internet and try again.");
     } finally {
@@ -91,6 +95,24 @@ export function JoinSheet({
           </button>
         </div>
 
+        {hasSaved && (
+          <p className="mt-3 text-[14px] text-ink-2">
+            Saved in this browser.{" "}
+            <button
+              type="button"
+              className="font-semibold text-ink underline"
+              onClick={async () => {
+                await fetch("/api/me/profile", { method: "DELETE" }).catch(() => null);
+                setName("");
+                setEmail("");
+                setHasSaved(false);
+                firstField.current?.focus();
+              }}
+            >
+              Not you? Clear
+            </button>
+          </p>
+        )}
         <div className="mt-5 space-y-4">
           <label className="block">
             <span className="text-[15px] font-semibold">First name</span>

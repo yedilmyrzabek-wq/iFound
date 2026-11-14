@@ -4,7 +4,8 @@ import { useMemo, useState } from "react";
 import useSWR from "swr";
 import { ACTIVITY_META, CATEGORY_LABEL } from "@/lib/activities";
 import { formatCard, zoneLongName } from "@/lib/tz";
-import { ACTIVITIES, type Activity, type DayFilter, type EventSummary, type Venue } from "@/lib/types";
+import { ACTIVITIES, type Activity, type DayFilter, type DeckResponse, type EventSummary, type MeProfile, type Venue } from "@/lib/types";
+import { SwipeDeck } from "./SwipeDeck";
 import { EventCard } from "./EventCard";
 import { Icon } from "./Icon";
 import { MapView, type MapPin } from "./map";
@@ -32,10 +33,29 @@ interface CityInfo {
   defaultZoom: number;
 }
 
-export function CityView({ city, venues, initial, serverNow }: { city: CityInfo; venues: Venue[]; initial: EventSummary[]; serverNow: string }) {
+type View = "auto" | "swipe" | "list" | "map";
+
+export function CityView({
+  city,
+  venues,
+  initial,
+  serverNow,
+  deck,
+  profile,
+  initialView,
+}: {
+  city: CityInfo;
+  venues: Venue[];
+  initial: EventSummary[];
+  serverNow: string;
+  deck: DeckResponse;
+  profile: MeProfile | null;
+  initialView: View;
+}) {
   const [day, setDay] = useState<DayFilter>("all");
   const [acts, setActs] = useState<Activity[]>([]);
-  const [view, setView] = useState<"list" | "map">("list");
+  // "auto": Swipe on phones, List on desktop (TZ §8.12). Any explicit pick wins on every screen size.
+  const [view, setView] = useState<View>(initialView);
   const now = useNow(serverNow);
   const key = `/api/events?city=${city.slug}&day=${day}${acts.length ? `&activity=${acts.join(",")}` : ""}`;
   const isDefault = day === "all" && acts.length === 0;
@@ -127,6 +147,33 @@ export function CityView({ city, venues, initial, serverNow }: { city: CityInfo;
         </Link>
       </div>
 
+      <div role="tablist" aria-label="View" className="mt-5 inline-flex rounded-full border border-line-strong bg-surface p-1">
+        {(["swipe", "list", "map"] as const).map((v) => {
+          const active = view === v || (view === "auto" && v === "swipe");
+          const activeDesktop = view === v || (view === "auto" && v === "list");
+          return (
+            <button
+              key={v}
+              role="tab"
+              aria-selected={active}
+              onClick={() => setView(v)}
+              className={`h-10 rounded-full px-4 text-[15px] font-semibold capitalize ${v === "map" ? "lg:hidden" : ""} ${
+                active ? "bg-ink text-white" : "text-ink-2"
+              } ${activeDesktop ? "lg:bg-ink lg:text-white" : "lg:bg-transparent lg:text-ink-2"}`}
+            >
+              {v}
+            </button>
+          );
+        })}
+      </div>
+
+      {(view === "swipe" || view === "auto") && (
+        <div className={`mt-5 ${view === "auto" ? "lg:hidden" : ""}`}>
+          <SwipeDeck city={city} initial={deck} initialProfile={profile} first={null} serverNow={serverNow} />
+        </div>
+      )}
+
+      <div className={view === "swipe" ? "hidden" : view === "auto" ? "hidden lg:block" : ""}>
       <div className="-mx-4 mt-5 overflow-x-auto px-4 [scrollbar-width:none]">
         <div role="radiogroup" aria-label="Day" className="flex gap-2">
           {DAYS.map((d) => (
@@ -175,24 +222,22 @@ export function CityView({ city, venues, initial, serverNow }: { city: CityInfo;
 
         <section
           aria-label="Map of places"
-          className={`${view === "list" ? "hidden lg:block" : ""} h-[calc(100dvh-230px)] min-h-[360px] overflow-hidden rounded-[10px] border border-line lg:sticky lg:top-20 lg:h-[calc(100dvh-110px)]`}
+          className={`${view === "list" || view === "auto" ? "hidden lg:block" : ""} h-[calc(100dvh-230px)] min-h-[360px] overflow-hidden rounded-[10px] border border-line lg:sticky lg:top-20 lg:h-[calc(100dvh-110px)]`}
         >
           <MapView center={[city.centerLat, city.centerLng]} zoom={city.defaultZoom} pins={pins} />
         </section>
       </div>
 
-      {/* Mobile: list/map toggle + start, in the thumb zone */}
-      <div className="fixed inset-x-0 bottom-0 z-[900] flex gap-2 border-t border-line bg-ground/95 px-4 pt-3 pb-[calc(env(safe-area-inset-bottom)+12px)] backdrop-blur-sm lg:hidden">
-        <button
-          onClick={() => setView(view === "list" ? "map" : "list")}
-          className="inline-flex h-[52px] items-center gap-2 rounded-full border border-line-strong bg-surface px-5 text-[16px] font-semibold"
-        >
-          <Icon name={view === "list" ? "map" : "list"} /> {view === "list" ? "Map" : "List"}
-        </button>
-        <Link href={`/new?city=${city.slug}`} className="flex h-[52px] flex-1 items-center justify-center gap-2 rounded-full bg-bulb text-[17px] font-bold text-ink">
-          <Icon name="plus" size={18} /> Start a plan
-        </Link>
       </div>
+
+      {/* Mobile: start a plan, in the thumb zone (hidden on swipe, which has its own controls) */}
+      {view !== "swipe" && view !== "auto" && (
+        <div className="fixed inset-x-0 bottom-0 z-[900] border-t border-line bg-ground/95 px-4 pt-3 pb-[calc(env(safe-area-inset-bottom)+12px)] backdrop-blur-sm lg:hidden">
+          <Link href={`/new?city=${city.slug}`} className="flex h-[52px] items-center justify-center gap-2 rounded-full bg-bulb text-[17px] font-bold text-ink">
+            <Icon name="plus" size={18} /> Start a plan
+          </Link>
+        </div>
+      )}
     </main>
   );
 }
