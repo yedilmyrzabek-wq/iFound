@@ -34,12 +34,14 @@ export function NewPlanForm({
   venues,
   preVenueId,
   bounds,
+  asVenueDefault = false,
 }: {
   city: CityInfo;
   cities: { slug: string; name: string }[];
   venues: Venue[];
   preVenueId: string | null;
   bounds: { min: string; max: string };
+  asVenueDefault?: boolean;
 }) {
   const router = useRouter();
   const [activity, setActivity] = useState<Activity | null>(null);
@@ -60,6 +62,8 @@ export function NewPlanForm({
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [is18, setIs18] = useState(false);
+  const [asVenue, setAsVenue] = useState(asVenueDefault && !!preVenueId);
+  const [venueEmail, setVenueEmail] = useState("");
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [formError, setFormError] = useState<string | null>(null);
   const [paywall, setPaywall] = useState(false);
@@ -107,7 +111,7 @@ export function NewPlanForm({
       minPeople: min,
       maxPeople: effectiveMax,
       host: { name, email, photoPath: null, is18 },
-      asVenue: { enabled: false, email: null },
+      asVenue: { enabled: asVenue && !somewhereElse && !!venueId, email: asVenue && !somewhereElse && venueId ? venueEmail : null },
     };
     const parsed = createEventSchema.safeParse(body);
     const errs: Record<string, string> = {};
@@ -384,6 +388,32 @@ export function NewPlanForm({
           </label>
           {err("is18")}
         </section>
+
+        {venue && !somewhereElse && (
+          <section className="rounded-[10px] border border-line bg-surface p-4" data-field="asVenue">
+            <label className="flex min-h-11 cursor-pointer items-center justify-between gap-3">
+              <span>
+                <span className="block text-[16px] font-bold">Post as {venue.name}</span>
+                <span className="block text-[14px] text-ink-2">For people who run this place. Always free.</span>
+              </span>
+              <input
+                type="checkbox"
+                role="switch"
+                checked={asVenue}
+                onChange={(e) => setAsVenue(e.target.checked)}
+                className="h-6 w-11 shrink-0 cursor-pointer appearance-none rounded-full bg-line-strong transition-colors before:block before:size-5 before:translate-x-0.5 before:rounded-full before:bg-white before:shadow before:transition-transform checked:bg-ink checked:before:translate-x-[22px]"
+              />
+            </label>
+            {asVenue && (
+              <label className="mt-3 block">
+                <span className="text-[15px] font-semibold">Work email</span>
+                <input className={`${field} mt-1.5`} type="email" inputMode="email" value={venueEmail} onChange={(e) => setVenueEmail(e.target.value)} />
+                <span className="mt-1 block text-[14px] text-ink-2">We'll email you a link to verify. Your plan goes live right away.</span>
+              </label>
+            )}
+            {err("asVenue")}
+          </section>
+        )}
 
         {formError && (
           <p role="alert" className="rounded-[10px] bg-[#fdecea] px-3.5 py-3 text-[15px] text-danger">

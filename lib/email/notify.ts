@@ -85,10 +85,33 @@ async function activeParticipants(eventId: string) {
 export async function notifyHostCreated(eventId: string, hostEmail: string, site: string) {
   const c = await loadCtx(eventId, site);
   if (!c) return;
-  const m = c.isVenuePlan
-    ? T.venueHostCreated({ ...plan(c), minPeople: c.minPeople })
-    : T.hostCreated({ ...plan(c), minPeople: c.minPeople, needed: Math.max(c.minPeople - c.count, 0) });
+  if (c.isVenuePlan) return notifyVenueCreated(c, hostEmail);
+  const m = T.hostCreated({ ...plan(c), minPeople: c.minPeople, needed: Math.max(c.minPeople - c.count, 0) });
   await sendOnce({ dedupeKey: `host_created:${c.id}`, to: hostEmail, ...m });
+}
+
+const VENUE_LINK_DAYS = 30;
+
+async function notifyVenueCreated(c: Ctx, email: string) {
+  const { data } = await db()
+    .from("events")
+    .select("venue_claim_id, claim:venue_claims!events_venue_claim_id_fkey(id, verified_at, venue:venues(name))")
+    .eq("id", c.id)
+    .maybeSingle();
+  const claim = (data as unknown as { claim: { id: string; verified_at: string | null; venue: { name: string } | null } | null })?.claim;
+  if (!claim) return;
+  const exp = Date.now() + VENUE_LINK_DAYS * 24 * 3600_000;
+  const token = signLink("venue", claim.id, exp);
+  const manageUrl = `${c.site}/v/manage/${token}`;
+  if (claim.verified_at) {
+    await sendOnce({ dedupeKey: `host_created:${c.id}`, to: email, ...T.venueHostCreated({ ...plan(c), minPeople: c.minPeople, manageUrl }) });
+  } else {
+    await sendOnce({
+      dedupeKey: `venue_verify:${claim.id}:${c.id}`,
+      to: email,
+      ...T.venueVerify({ ...plan(c), venueName: claim.venue?.name ?? "your venue", verifyUrl: `${c.site}/v/verify/${token}`, manageUrl }),
+    });
+  }
 }
 
 /** Called only from the request that got r_just_confirmed = true (or with confirmed status for late joiners). */

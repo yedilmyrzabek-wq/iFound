@@ -104,7 +104,7 @@ export async function POST(req: Request) {
       .select("id")
       .eq("venue_id", venue.id)
       .ilike("email", input.asVenue.email)
-      .not("verified_at", "is", null)
+      .order("verified_at", { ascending: false, nullsFirst: false })
       .limit(1)
       .maybeSingle();
     if (existing) {
@@ -117,7 +117,7 @@ export async function POST(req: Request) {
         .single();
       if (error) throw error;
       claimId = created.id;
-      // TODO(P2): send venue_verify email with a signed /v/verify link.
+      // The venue_verify email (signed /v/verify link) goes out with the host email below.
     }
   }
 

@@ -11,8 +11,17 @@ function esc(s: string): string {
   return s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
 }
 
-function layout(opts: { heading: string; lines: string[]; plan: PlanInfo; cta: string; leaveUrl?: string }) {
-  const { heading, lines, plan, cta, leaveUrl } = opts;
+function layout(opts: {
+  heading: string;
+  lines: string[];
+  plan: PlanInfo;
+  cta: string;
+  ctaUrl?: string;
+  leaveUrl?: string;
+  footerLink?: { text: string; label: string; url: string };
+}) {
+  const { heading, lines, plan, cta, leaveUrl, footerLink } = opts;
+  const ctaUrl = opts.ctaUrl ?? plan.url;
   const html = `<!doctype html><html><body style="margin:0;background:#faf6f0;font-family:-apple-system,Segoe UI,Helvetica,Arial,sans-serif;color:#2a211b">
 <table role="presentation" width="100%" cellpadding="0" cellspacing="0"><tr><td align="center" style="padding:32px 16px">
 <table role="presentation" width="100%" style="max-width:480px;background:#ffffff;border-radius:16px;padding:28px" cellpadding="0" cellspacing="0">
@@ -24,8 +33,9 @@ ${lines.map((l) => `<tr><td style="font-size:16px;line-height:1.5;padding-bottom
 <div style="font-size:15px;color:#5b4c40;padding-top:4px">${esc(plan.when)}</div>
 <div style="font-size:15px;color:#5b4c40">${esc(plan.where)}</div>
 </td></tr>
-<tr><td style="padding:8px 0 4px"><a href="${esc(plan.url)}" style="display:inline-block;background:#d9480f;color:#fff;text-decoration:none;font-weight:700;padding:12px 20px;border-radius:999px">${esc(cta)}</a></td></tr>
+<tr><td style="padding:8px 0 4px"><a href="${esc(ctaUrl)}" style="display:inline-block;background:#d9480f;color:#fff;text-decoration:none;font-weight:700;padding:12px 20px;border-radius:999px">${esc(cta)}</a></td></tr>
 ${leaveUrl ? `<tr><td style="font-size:14px;color:#7a6a5c;padding-top:20px">Can't make it? <a href="${esc(leaveUrl)}" style="color:#7a6a5c">Leave this plan</a></td></tr>` : ""}
+${footerLink ? `<tr><td style="font-size:14px;color:#7a6a5c;padding-top:20px">${esc(footerLink.text)} <a href="${esc(footerLink.url)}" style="color:#7a6a5c">${esc(footerLink.label)}</a></td></tr>` : ""}
 </table>
 <div style="font-size:12px;color:#9a8a7c;padding-top:16px">You're getting this because you joined or started a plan on iFound.</div>
 </td></tr></table></body></html>`;
@@ -38,8 +48,10 @@ ${leaveUrl ? `<tr><td style="font-size:14px;color:#7a6a5c;padding-top:20px">Can'
     plan.when,
     plan.where,
     "",
-    `${cta}: ${plan.url}`,
+    `${cta}: ${ctaUrl}`,
+    ...(ctaUrl !== plan.url ? [`Plan: ${plan.url}`] : []),
     ...(leaveUrl ? ["", `Can't make it? ${leaveUrl}`] : []),
+    ...(footerLink ? ["", `${footerLink.text} ${footerLink.url}`] : []),
   ].join("\n");
   return { html, text };
 }
@@ -59,7 +71,7 @@ export function hostCreated(p: PlanInfo & { needed: number; minPeople: number })
   };
 }
 
-export function venueHostCreated(p: PlanInfo & { minPeople: number }) {
+export function venueHostCreated(p: PlanInfo & { minPeople: number; manageUrl: string }) {
   return {
     subject: "Your plan is live — share it to fill it",
     ...layout({
@@ -67,6 +79,24 @@ export function venueHostCreated(p: PlanInfo & { minPeople: number }) {
       lines: [`It happens only if at least ${p.minPeople} people join. Share the link to fill it.`],
       plan: p,
       cta: "Open the plan",
+      footerLink: { text: "See all your plans and how many people joined:", label: "Manage", url: p.manageUrl },
+    }),
+  };
+}
+
+export function venueVerify(p: PlanInfo & { venueName: string; verifyUrl: string; manageUrl: string }) {
+  return {
+    subject: `Confirm you represent ${p.venueName}`,
+    ...layout({
+      heading: `Confirm you represent ${p.venueName}`,
+      lines: [
+        "Your plan is already live. Confirm it's really you, and your plans get the ✓ venue badge.",
+        "Posting on iFound is always free for places.",
+      ],
+      plan: p,
+      cta: "Confirm",
+      ctaUrl: p.verifyUrl,
+      footerLink: { text: "Manage your plans (counts only, no names):", label: "Manage", url: p.manageUrl },
     }),
   };
 }

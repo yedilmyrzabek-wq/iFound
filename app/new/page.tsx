@@ -33,6 +33,7 @@ export default async function NewPage({ searchParams }: { searchParams: Promise<
         venues={venues}
         preVenueId={preVenueId}
         bounds={createBounds(city.timezone, nowUtc())}
+        asVenueDefault={sp.asVenue === "1"}
       />
       <Footer />
     </>
