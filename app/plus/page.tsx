@@ -65,6 +65,13 @@ export default async function PlusPage() {
             <PlusButton />
           )}
           <p className="mt-3 text-center text-[14px] text-ink-2">$8/month, renews monthly. Cancel anytime.</p>
+          {!plus.active && (
+            <p className="mt-1 text-center text-[14px]">
+              <a href="/plus/restore" className="font-semibold underline">
+                Already a member? Restore
+              </a>
+            </p>
+          )}
         </div>
       </main>
       <Footer />

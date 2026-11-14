@@ -167,3 +167,20 @@ export function cancelledHost(p: PlanInfo) {
     }),
   };
 }
+
+export function subscriptionRestore(p: { restoreUrl: string }) {
+  const heading = "Restore iFound+ on this device";
+  const html = `<!doctype html><html><body style="margin:0;background:#faf6f0;font-family:-apple-system,Segoe UI,Helvetica,Arial,sans-serif;color:#2a211b">
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0"><tr><td align="center" style="padding:32px 16px">
+<table role="presentation" width="100%" style="max-width:480px;background:#ffffff;border-radius:16px;padding:28px" cellpadding="0" cellspacing="0">
+<tr><td style="font-weight:800;font-size:18px;color:#d9480f;padding-bottom:20px">iFound</td></tr>
+<tr><td style="font-size:24px;font-weight:800;line-height:1.25;padding-bottom:12px">${esc(heading)}</td></tr>
+<tr><td style="font-size:16px;line-height:1.5;padding-bottom:16px">Tap the button on the device where you want iFound+. The link works for 1 hour.</td></tr>
+<tr><td><a href="${esc(p.restoreUrl)}" style="display:inline-block;background:#d9480f;color:#fff;text-decoration:none;font-weight:700;padding:12px 20px;border-radius:999px">Restore iFound+</a></td></tr>
+<tr><td style="font-size:13px;color:#9a8a7c;padding-top:20px">Didn't ask for this? You can ignore this email.</td></tr>
+</table></td></tr></table></body></html>`;
+  return { subject: heading, html, text: `${heading}
+
+Open this link on the device where you want iFound+ (valid for 1 hour):
+${p.restoreUrl}` };
+}

@@ -6,7 +6,13 @@ import type { MyPlan } from "@/lib/me";
 import { EventCard } from "./EventCard";
 import { useNow } from "./useNow";
 
-type Data = { going: MyPlan[]; hosting: MyPlan[]; past: MyPlan[]; plus: { active: boolean; until: string | null } };
+type Data = {
+  going: MyPlan[];
+  hosting: MyPlan[];
+  past: MyPlan[];
+  plus: { active: boolean; until: string | null };
+  profile: { name: string; email: string; photoPath: string | null } | null;
+};
 const TABS = [
   { k: "going", label: "Going" },
   { k: "hosting", label: "Hosting" },
@@ -16,6 +22,7 @@ const TABS = [
 export function MyPlansView({ data, serverNow }: { data: Data; serverNow: string }) {
   const [tab, setTab] = useState<(typeof TABS)[number]["k"]>(data.going.length || !data.hosting.length ? "going" : "hosting");
   const now = useNow(serverNow);
+  const [profile, setProfile] = useState(data.profile);
   const list = data[tab];
   return (
     <main className="mx-auto max-w-2xl px-4 pt-6 pb-16">
@@ -26,9 +33,15 @@ export function MyPlansView({ data, serverNow }: { data: Data; serverNow: string
             iFound+ active{data.plus.until ? ` until ${DateTime.fromISO(data.plus.until).toFormat("LLL d")}` : ""}
           </span>
         ) : (
-          <Link href="/plus" className="font-semibold text-ink underline">
-            Get iFound+
-          </Link>
+          <>
+            <Link href="/plus" className="font-semibold text-ink underline">
+              Get iFound+
+            </Link>
+            {" · "}
+            <Link href="/plus/restore" className="font-semibold text-ink underline">
+              Restore iFound+
+            </Link>
+          </>
         )}
       </p>
 
@@ -71,6 +84,20 @@ export function MyPlansView({ data, serverNow }: { data: Data; serverNow: string
       </div>
 
       <p className="mt-8 text-[14px] text-ink-2">Your plans are saved in this browser. Switched browsers? Use the links in your emails.</p>
+      {profile && (
+        <p className="mt-2 text-[14px] text-ink-2">
+          Joining as <span className="font-semibold text-ink">{profile.name}</span> ({profile.email}).{" "}
+          <button
+            className="font-semibold text-ink underline"
+            onClick={async () => {
+              await fetch("/api/me/profile", { method: "DELETE" }).catch(() => null);
+              setProfile(null);
+            }}
+          >
+            Not you? Clear
+          </button>
+        </p>
+      )}
     </main>
   );
 }
