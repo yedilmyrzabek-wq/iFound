@@ -4,6 +4,7 @@ import { nowUtc } from "@/lib/tz";
 import { EventCard } from "@/components/EventCard";
 import { Footer, Header } from "@/components/Header";
 import { HomeMap } from "@/components/HomeMap";
+import { CityBoards } from "@/components/CityBoards";
 import { LetterLine } from "@/components/Letterboard";
 import { WaitlistForm } from "@/components/WaitlistForm";
 import { DemoStartButton } from "@/components/DemoControls";
@@ -82,19 +83,17 @@ export default async function Home() {
         </section>
 
         <section className="mx-auto max-w-6xl px-4" aria-labelledby="cities">
-          <h2 id="cities" className="text-[22px] font-bold">
-            Pick your city
-          </h2>
-          <div className="mt-3 flex flex-wrap gap-2">
-            {cities.map((c) => (
-              <Link key={c.slug} href={`/c/${c.slug}`} className="inline-flex h-11 items-center gap-2 rounded-full border border-line-strong bg-surface px-4 text-[16px] font-semibold hover:border-ink/50">
-                {c.name.split(",")[0]}
-                <span className={`rounded-full px-2 py-0.5 text-[13px] ${c.openCount ? "bg-bulb text-ink" : "bg-[#e4e6e1] text-ink-2"}`}>{c.openCount}</span>
-              </Link>
-            ))}
+          <div className="flex flex-wrap items-end justify-between gap-2">
+            <h2 id="cities" className="text-[28px] leading-none font-extrabold tracking-[-0.02em]">
+              Pick your city
+            </h2>
+            <p className="text-[15px] text-ink-2">Five US cities to start. Times are always local to the plan.</p>
           </div>
-          <div className="mt-4 hidden h-[380px] overflow-hidden rounded-[10px] border border-line sm:block">
-            <HomeMap cities={cities} />
+          <div className="mt-5 grid gap-4 lg:grid-cols-[minmax(0,1fr)_300px]">
+            <div className="relative hidden h-full min-h-[460px] overflow-hidden rounded-[14px] border border-line bg-[#e8e8e3] shadow-[var(--shadow-lift)] lg:block">
+              <HomeMap cities={cities} />
+            </div>
+            <CityBoards cities={cities} serverNow={now} />
           </div>
         </section>
 

@@ -8,3 +8,6 @@ export const MapView = dynamic(() => import("./MapView.client"), {
 });
 
 export type { MapPin } from "./MapView.client";
+
+/** Quiet basemap for overview maps (kept here so importing it doesn't pull Leaflet into the server bundle). */
+export const QUIET_TILES = "https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Light_Gray_Base/MapServer/tile/{z}/{y}/{x}";

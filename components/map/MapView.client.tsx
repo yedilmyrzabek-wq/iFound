@@ -14,6 +14,8 @@ export interface MapPin {
   selected?: boolean;
   title?: string;
   popup?: React.ReactNode;
+  /** Draws a labeled letterboard sign instead of a dot (US overview map). */
+  label?: string;
 }
 
 const TILES = process.env.NEXT_PUBLIC_MAP_TILES_URL || "https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}";
@@ -21,7 +23,21 @@ const ATTRIBUTION =
   process.env.NEXT_PUBLIC_MAP_ATTRIBUTION ||
   '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &middot; Tiles &copy; Esri';
 
+function esc(s: string) {
+  return s.replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" })[c]!);
+}
+
 function iconFor(p: MapPin): L.DivIcon {
+  if (p.label) {
+    const hot = (p.count ?? 0) > 0;
+    const w = 26 + p.label.length * 9 + (hot ? 28 : 0);
+    return L.divIcon({
+      className: "ifound-pin",
+      iconSize: [w, 38],
+      iconAnchor: [w / 2, 38],
+      html: `<div class="city-sign${hot ? " hot" : ""}"><span class="letter">${esc(p.label)}</span>${hot ? `<span class="letter city-sign-n">${p.count}</span>` : ""}</div><div class="city-sign-stem"></div>`,
+    });
+  }
   if (p.selected) {
     return L.divIcon({
       className: "ifound-pin",
@@ -79,6 +95,8 @@ export default function MapView({
   focus,
   className = "",
   interactive = true,
+  tiles,
+  zoomControl,
 }: {
   center: [number, number];
   zoom: number;
@@ -88,6 +106,9 @@ export default function MapView({
   focus?: { lat: number; lng: number; zoom?: number } | null;
   className?: string;
   interactive?: boolean;
+  /** Override the tile layer (e.g. QUIET_TILES from ./index for the US overview). */
+  tiles?: string;
+  zoomControl?: boolean;
 }) {
   const icons = useMemo(() => new Map(pins.map((p) => [p.id, iconFor(p)])), [pins]);
   return (
@@ -96,13 +117,13 @@ export default function MapView({
       zoom={zoom}
       scrollWheelZoom={false}
       dragging={interactive}
-      zoomControl={interactive}
+      zoomControl={zoomControl ?? interactive}
       doubleClickZoom={interactive}
       touchZoom={interactive}
       className={`h-full w-full ${className}`}
       attributionControl
     >
-      <TileLayer url={TILES} attribution={ATTRIBUTION} />
+      <TileLayer url={tiles ?? TILES} attribution={ATTRIBUTION} />
       <PlainPrefix />
       {onMapClick && <ClickCatcher onClick={onMapClick} />}
       {focus && <FlyTo lat={focus.lat} lng={focus.lng} zoom={focus.zoom} />}

@@ -185,6 +185,39 @@
   }
 }
 
+/* US map city signs: small felt boards on a stem */
+.city-sign {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  height: 28px;
+  padding: 0 10px;
+  border-radius: 6px;
+  background: var(--color-felt);
+  box-shadow: 0 1px 2px rgb(0 0 0 / 0.3), 0 6px 14px -6px rgb(0 0 0 / 0.5);
+  white-space: nowrap;
+  transition: transform 160ms var(--ease-out-expo);
+}
+.city-sign .letter {
+  font-size: 14px;
+  line-height: 1;
+}
+.city-sign.hot {
+  outline: 1.5px solid var(--color-bulb);
+}
+.city-sign-n {
+  color: var(--color-bulb) !important;
+}
+.city-sign-stem {
+  width: 2px;
+  height: 10px;
+  margin: 0 auto;
+  background: var(--color-felt);
+}
+.ifound-pin:hover .city-sign {
+  transform: translateY(-2px);
+}
+
 /* Leaflet custom markers */
 .ifound-pin {
   background: transparent;
