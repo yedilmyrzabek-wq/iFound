@@ -59,7 +59,7 @@ export default async function PlusPage() {
         <div className="mt-7">
           {plus.active ? (
             <p className="rounded-[10px] bg-go px-4 py-3.5 text-[16px] font-semibold text-white">
-              You're in iFound+{plus.until ? ` — active until ${DateTime.fromISO(plus.until).toFormat("LLL d")}` : ""}.
+              You're in iFound+{plus.until ? ` — active until ${DateTime.fromISO(plus.until, { zone: "utc" }).toFormat("LLL d")}` : ""}.
             </p>
           ) : (
             <PlusButton />

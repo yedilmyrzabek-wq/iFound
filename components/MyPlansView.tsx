@@ -30,7 +30,7 @@ export function MyPlansView({ data, serverNow }: { data: Data; serverNow: string
       <p className="mt-3 text-[15px] text-ink-2">
         {data.plus.active ? (
           <span className="font-semibold text-ink">
-            iFound+ active{data.plus.until ? ` until ${DateTime.fromISO(data.plus.until).toFormat("LLL d")}` : ""}
+            iFound+ active{data.plus.until ? ` until ${DateTime.fromISO(data.plus.until, { zone: "utc" }).toFormat("LLL d")}` : ""}
           </span>
         ) : (
           <>
