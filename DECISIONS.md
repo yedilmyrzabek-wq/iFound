@@ -18,3 +18,4 @@ One line each: time (Asia/Almaty), decision, why.
 - 2026-11-14 23:50 — Venue claims are reused per venue + email, so one manage link covers every plan that person posted for the place.
 - 2026-11-15 00:10 — Test 10 (paywall) runs over HTTP against a live server (`TEST_BASE_URL`), because the limit logic is in the API layer by design (the DB functions stay pure threshold logic).
 - 2026-11-15 00:20 — Avatars: the client crops to 256×256 WebP; the server only accepts real WebP (magic bytes), ≤300 KB, into the private bucket.
+- 2026-11-15 01:00 — Jury demo: a judge tests alone, so a threshold of 3 can't fill by itself. "Start the 60-second demo" creates a fresh is_demo plan (code `demo****`) with "Add a demo guest" (real join_event, guests labeled "(demo)") and "Skip to the fill deadline" (moves start, runs the real sweep). Allowed by the case FAQ (Q35, Q66, Q69). Demo plans are excluded from lists and the deck; `@demo.invalid` addresses get no email.

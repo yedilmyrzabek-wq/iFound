@@ -82,6 +82,7 @@ export async function listCities(): Promise<City[]> {
       .from("events")
       .select("city_slug, status, starts_at, duration_minutes, cancel_reason")
       .eq("hidden", false)
+      .not("code", "like", "demo%")
       .in("status", ["filling", "confirmed"])
       .gt("starts_at", now),
   ]);
@@ -159,6 +160,7 @@ export async function listEvents(
     .select(EVENT_COLUMNS)
     .eq("city_slug", citySlug)
     .eq("hidden", false)
+      .not("code", "like", "demo%")
     .in("status", ["filling", "confirmed"])
     .gte("starts_at", range.from)
     .order("starts_at", { ascending: true })
@@ -250,6 +252,7 @@ export async function getDeck(
       .select(EVENT_COLUMNS)
       .eq("city_slug", citySlug)
       .eq("hidden", false)
+      .not("code", "like", "demo%")
       .in("status", ["filling", "confirmed"])
       .gte("starts_at", range.from)
       .order("starts_at", { ascending: true })

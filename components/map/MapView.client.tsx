@@ -49,6 +49,14 @@ function iconFor(p: MapPin): L.DivIcon {
   });
 }
 
+function PlainPrefix() {
+  const map = useMap();
+  useEffect(() => {
+    map.attributionControl?.setPrefix('<a href="https://leafletjs.com">Leaflet</a>');
+  }, [map]);
+  return null;
+}
+
 function ClickCatcher({ onClick }: { onClick: (lat: number, lng: number) => void }) {
   useMapEvents({ click: (e) => onClick(+e.latlng.lat.toFixed(6), +e.latlng.lng.toFixed(6)) });
   return null;
@@ -95,6 +103,7 @@ export default function MapView({
       attributionControl
     >
       <TileLayer url={TILES} attribution={ATTRIBUTION} />
+      <PlainPrefix />
       {onMapClick && <ClickCatcher onClick={onMapClick} />}
       {focus && <FlyTo lat={focus.lat} lng={focus.lng} zoom={focus.zoom} />}
       {pins.map((p) => (

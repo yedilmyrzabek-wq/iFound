@@ -8,6 +8,8 @@ Live: **https://ifound-three.vercel.app** · Built for Zimran Business Cup 2.0 �
 
 No account, no password, no email verification.
 
+**Fastest path: the home page has a "Start the 60-second demo" button.** It creates a fresh, clearly labeled demo plan (needs 3 people). Tap *I'm in* (or *Use sample details*), then *Add a demo guest*: the guest joins through the same `join_event` as a real person, and the plan flips to **It's on!**. *Skip to the fill deadline* moves a demo plan's start time and runs the real `sweep_events()`, so you can see a plan get called off. Demo plans never appear in public lists, and demo addresses (`@demo.invalid`) never receive email.
+
 1. Open **Austin**. On a phone you land on the **swipe deck**: swipe right (or tap ✓) = *I'm in*, left = skip. The first right swipe asks for first name, email and "I'm 18 or older"; the next ones join in one tap. Or open any plan and tap **I'm in**.
 2. The counter updates on every open screen within ~8 seconds.
 3. When the plan reaches its minimum, everyone gets **"It's on"** with a calendar invite (`.ics`).

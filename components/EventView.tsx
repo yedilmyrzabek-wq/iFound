@@ -14,6 +14,7 @@ import { DemoChip, StatusChip } from "./StatusChip";
 import { MapView } from "./map";
 import { useNow, useViewerZone } from "./useNow";
 import { ReportButton } from "./ReportButton";
+import { DemoControls } from "./DemoControls";
 
 const SITE = (process.env.NEXT_PUBLIC_SITE_URL ?? "").replace(/\/$/, "");
 
@@ -138,6 +139,8 @@ export function EventView({
           </button>
         </div>
       )}
+
+      {e.isDemo && /^demo[a-z0-9]{4}$/.test(e.code) && <DemoControls code={e.code} status={e.status} onChange={() => void mutate()} />}
 
       <div className="relative mt-4">
         <Counter status={e.status} cancelReason={e.cancelReason} count={e.count} min={e.minPeople} max={e.maxPeople} celebrate={celebrate} />
@@ -316,7 +319,7 @@ export function EventView({
             <p className="flex h-[52px] flex-1 items-center justify-center gap-2 rounded-full bg-[#e4e6e1] text-[16px] font-semibold">You're hosting</p>
           ) : e.viewer.role === "participant" ? (
             <p className="flex h-[52px] flex-1 items-center justify-center gap-2 rounded-full bg-go text-[16px] font-bold text-white">
-              <Icon name="check" size={20} /> You're in ✓
+              You're in ✓
             </p>
           ) : e.viewer.canJoin ? (
             <button
@@ -352,7 +355,7 @@ export function EventView({
         </div>
       )}
 
-      {sheet && <JoinSheet code={e.code} title={e.title} profile={profile} onClose={closeSheet} onJoined={onJoined} />}
+      {sheet && <JoinSheet code={e.code} title={e.title} profile={profile} demo={e.isDemo && /^demo[a-z0-9]{4}$/.test(e.code)} onClose={closeSheet} onJoined={onJoined} />}
     </main>
   );
 }

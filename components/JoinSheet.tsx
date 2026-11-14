@@ -12,6 +12,7 @@ export function JoinSheet({
   onClose,
   onJoined,
   profile = null,
+  demo = false,
 }: {
   code: string;
   title: string;
@@ -19,6 +20,8 @@ export function JoinSheet({
   onJoined: (r: JoinResponse, saved: MeProfile) => void;
   /** Saved guest profile (TZ §8.12) — prefills the form. */
   profile?: MeProfile | null;
+  /** Jury demo plan: offer one-click sample details (no emails go to @demo.invalid). */
+  demo?: boolean;
 }) {
   const [name, setName] = useState(profile?.name ?? "");
   const [email, setEmail] = useState(profile?.email ?? "");
@@ -97,6 +100,19 @@ export function JoinSheet({
           </button>
         </div>
 
+        {demo && !hasSaved && (
+          <button
+            type="button"
+            onClick={() => {
+              setName("Alex");
+              setEmail("you@demo.invalid");
+              setIs18(true);
+            }}
+            className="mt-3 inline-flex h-10 items-center rounded-full border-2 border-dashed border-bulb-deep bg-[#fff8e3] px-4 text-[14px] font-semibold"
+          >
+            Use sample details (demo)
+          </button>
+        )}
         {hasSaved && (
           <p className="mt-3 text-[14px] text-ink-2">
             Saved in this browser.{" "}

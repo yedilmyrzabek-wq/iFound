@@ -21,6 +21,8 @@ export interface Mail {
 
 /** Returns true if this call actually sent the email (false = already sent before, or failed). */
 export async function sendOnce(mail: Mail): Promise<boolean> {
+  // Demo guests added by the jury demo have @demo.invalid addresses: never send to them.
+  if (mail.to.toLowerCase().endsWith("@demo.invalid")) return false;
   const { data: claimed, error } = await db()
     .from("email_log")
     .upsert({ dedupe_key: mail.dedupeKey, to_email: mail.to, status: "pending" }, { onConflict: "dedupe_key", ignoreDuplicates: true })

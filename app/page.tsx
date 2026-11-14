@@ -6,6 +6,7 @@ import { Footer, Header } from "@/components/Header";
 import { HomeMap } from "@/components/HomeMap";
 import { LetterLine } from "@/components/Letterboard";
 import { WaitlistForm } from "@/components/WaitlistForm";
+import { DemoStartButton } from "@/components/DemoControls";
 
 export const dynamic = "force-dynamic";
 
@@ -47,6 +48,36 @@ export default async function Home() {
                 <LetterLine text="at 6 → it's on" className="text-[clamp(1rem,6cqw,1.5rem)] [&_.letter]:text-go-bright" />
               </div>
             </div>
+          </div>
+        </section>
+
+        <section className="mx-auto mb-12 max-w-6xl px-4" aria-labelledby="jury">
+          <div className="rounded-[14px] border-2 border-dashed border-bulb-deep bg-[#fff8e3] p-5 sm:p-7">
+            <h2 id="jury" className="text-[22px] font-extrabold">Trying iFound? Here's the 60-second path</h2>
+            <ol className="mt-3 list-decimal space-y-1.5 pl-5 text-[16px] leading-relaxed">
+              <li>
+                Start a <span className="font-semibold">demo plan</span> — board games in Austin that needs 3 people.
+              </li>
+              <li>
+                Tap <span className="font-semibold">I'm in</span> with your first name and email. No account.
+              </li>
+              <li>
+                Add labeled demo guests until it reaches 3 and watch it flip to <span className="font-semibold">It's on!</span> — or skip to the deadline
+                and see it called off.
+              </li>
+              <li>
+                Swipe real plans in{" "}
+                <a href="/c/austin/swipe" className="font-semibold underline">
+                  Austin
+                </a>
+                , start your own, and try{" "}
+                <a href="/plus" className="font-semibold underline">
+                  iFound+
+                </a>{" "}
+                with test card 4242 4242 4242 4242.
+              </li>
+            </ol>
+            <DemoStartButton className="mt-5" />
           </div>
         </section>
 
