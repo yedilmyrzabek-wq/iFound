@@ -267,13 +267,20 @@ export async function getDeck(
   const ids = rows.map((r) => r.id);
   const mine = new Set<string>();
   const hosts = new Map<string, string>();
+  const hostPhotoUrl = new Map<string, string>();
   if (ids.length) {
     const [{ data: myRows }, { data: hostRows }] = await Promise.all([
       db().from("participants").select("event_id").in("event_id", ids).eq("user_token", viewerToken).is("left_at", null),
-      db().from("participants").select("event_id, display_name").in("event_id", ids).eq("is_host", true).is("left_at", null),
+      db().from("participants").select("event_id, display_name, photo_path, photo_hidden").in("event_id", ids).eq("is_host", true).is("left_at", null),
     ]);
     for (const r of myRows ?? []) mine.add(r.event_id);
-    for (const r of hostRows ?? []) hosts.set(r.event_id, r.display_name);
+    // The host's name and photo are visible to everyone (TZ §7).
+    const hostPhotos = (hostRows ?? []).filter((r) => r.photo_path && !r.photo_hidden).map((r) => r.photo_path as string);
+    const urls = await signedPhotoUrls(hostPhotos);
+    for (const r of hostRows ?? []) {
+      hosts.set(r.event_id, r.display_name);
+      if (r.photo_path && !r.photo_hidden && urls.has(r.photo_path)) hostPhotoUrl.set(r.event_id, urls.get(r.photo_path)!);
+    }
   }
 
   const eligible = rows
@@ -296,7 +303,7 @@ export async function getDeck(
     cards: page.map(({ row, s }) => ({
       ...s,
       timezone: row.city?.timezone ?? timezone,
-      host: row.venue_claim_id ? null : hosts.has(row.id) ? { name: hosts.get(row.id)!, photoUrl: null } : null,
+      host: row.venue_claim_id ? null : hosts.has(row.id) ? { name: hosts.get(row.id)!, photoUrl: hostPhotoUrl.get(row.id) ?? null } : null,
     })),
     nextCursor: cursor + pageSize < ordered.length ? cursor + pageSize : null,
   };

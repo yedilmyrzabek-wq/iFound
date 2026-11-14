@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import { joinSchema } from "@/lib/validation";
 import type { ApiError, JoinResponse, MeProfile } from "@/lib/types";
 import { Icon } from "./Icon";
+import { PhotoPicker } from "./PhotoPicker";
 
 export function JoinSheet({
   code,
@@ -22,6 +23,7 @@ export function JoinSheet({
   const [name, setName] = useState(profile?.name ?? "");
   const [email, setEmail] = useState(profile?.email ?? "");
   const [hasSaved, setHasSaved] = useState(!!profile);
+  const [photoPath, setPhotoPath] = useState<string | null>(profile?.photoPath ?? null);
   const [is18, setIs18] = useState(false);
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [formError, setFormError] = useState<string | null>(null);
@@ -43,7 +45,7 @@ export function JoinSheet({
   async function submit(e: React.FormEvent) {
     e.preventDefault();
     setFormError(null);
-    const parsed = joinSchema.safeParse({ name, email, photoPath: null, is18 });
+    const parsed = joinSchema.safeParse({ name, email, photoPath, is18 });
     if (!parsed.success) {
       const errs: Record<string, string> = {};
       for (const i of parsed.error.issues) errs[String(i.path[0])] ??= i.message;
@@ -63,7 +65,7 @@ export function JoinSheet({
         setFormError((body as ApiError).message ?? "Something went wrong. Please try again.");
         return;
       }
-      onJoined(body, { name: parsed.data.name, email: parsed.data.email, photoPath: null });
+      onJoined(body, { name: parsed.data.name, email: parsed.data.email, photoPath: parsed.data.photoPath });
     } catch {
       setFormError("No connection. Check your internet and try again.");
     } finally {
@@ -144,6 +146,7 @@ export function JoinSheet({
               {errors.email ?? "We'll only email you about this plan"}
             </span>
           </label>
+          <PhotoPicker name={name} onChange={setPhotoPath} />
           <label className="flex min-h-11 cursor-pointer items-center gap-3">
             <input
               type="checkbox"

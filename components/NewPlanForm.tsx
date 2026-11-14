@@ -7,6 +7,7 @@ import { zoneLongName } from "@/lib/tz";
 import { createEventSchema, defaultMax } from "@/lib/validation";
 import { ACTIVITIES, DURATIONS, type Activity, type ApiError, type CreateEventResponse, type Venue } from "@/lib/types";
 import { Icon } from "./Icon";
+import { PhotoPicker } from "./PhotoPicker";
 import { MapView, type MapPin } from "./map";
 
 interface CityInfo {
@@ -64,6 +65,7 @@ export function NewPlanForm({
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [is18, setIs18] = useState(false);
+  const [photoPath, setPhotoPath] = useState<string | null>(null);
   const [asVenue, setAsVenue] = useState(asVenueDefault && !!preVenueId);
   const [venueEmail, setVenueEmail] = useState("");
   const [isDemo, setIsDemo] = useState(admin);
@@ -113,7 +115,7 @@ export function NewPlanForm({
       durationMinutes: duration,
       minPeople: min,
       maxPeople: effectiveMax,
-      host: { name, email, photoPath: null, is18 },
+      host: { name, email, photoPath, is18 },
       isDemo: admin && isDemo,
       asVenue: { enabled: asVenue && !somewhereElse && !!venueId, email: asVenue && !somewhereElse && venueId ? venueEmail : null },
     };
@@ -386,6 +388,7 @@ export function NewPlanForm({
             <input className={`${field} mt-1.5`} type="email" inputMode="email" autoComplete="email" value={email} onChange={(e) => setEmail(e.target.value)} />
             {errors.email ? err("email") : <span className="mt-1 block text-[14px] text-ink-2">We'll send you the link to your plan. No account needed.</span>}
           </label>
+          <PhotoPicker name={name} onChange={setPhotoPath} />
           <label className="flex min-h-11 cursor-pointer items-center gap-3" data-field="is18">
             <input type="checkbox" className="size-5 accent-[#16171a]" checked={is18} onChange={(e) => setIs18(e.target.checked)} />
             <span className="text-[15px]">I'm 18 or older</span>
