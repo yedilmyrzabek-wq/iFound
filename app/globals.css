@@ -1,4 +1,8 @@
 @import "tailwindcss";
+/* Scan sources explicitly so cached or git-less builds never miss a component. */
+@source "../app";
+@source "../components";
+@source "../lib";
 
 @theme {
   --color-ground: #f3f4f1;
