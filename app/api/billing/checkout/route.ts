@@ -24,6 +24,8 @@ export async function POST(req: Request) {
     allow_promotion_codes: false,
     // US product: always charge and display in USD, even for viewers abroad (no automatic local-currency conversion).
     adaptive_pricing: { enabled: false },
+    // Card only, so the test card 4242 4242 4242 4242 works right away (no bank/Cash App choices).
+    payment_method_types: ["card"],
     locale: "en",
   });
   return NextResponse.json({ url: session.url });
