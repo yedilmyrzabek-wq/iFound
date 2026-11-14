@@ -52,7 +52,7 @@ Environment variables are listed in [`.env.example`](.env.example). No Supabase 
 
 ## Data and attribution
 
-Venues come from **OpenStreetMap** via Overpass, fetched once by [`scripts/seed-venues.ts`](scripts/seed-venues.ts) and committed to `data/venues/`. The runtime never calls Overpass. Bars, pubs and nightclubs are excluded. Map data © [OpenStreetMap contributors](https://www.openstreetmap.org/copyright) (ODbL). Tiles by CARTO.
+Venues come from **OpenStreetMap** via Overpass, fetched once by [`scripts/seed-venues.ts`](scripts/seed-venues.ts) and committed to `data/venues/`. The runtime never calls Overpass. Bars, pubs and nightclubs are excluded. Map data © [OpenStreetMap contributors](https://www.openstreetmap.org/copyright) (ODbL). Tiles © Esri.
 
 Demo plans are created through the product by the team and carry a **Demo** badge. There are no fake participants: every count comes from real joins.
 

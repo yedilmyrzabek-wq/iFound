@@ -16,10 +16,10 @@ export interface MapPin {
   popup?: React.ReactNode;
 }
 
-const TILES = process.env.NEXT_PUBLIC_MAP_TILES_URL || "https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png";
+const TILES = process.env.NEXT_PUBLIC_MAP_TILES_URL || "https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}";
 const ATTRIBUTION =
   process.env.NEXT_PUBLIC_MAP_ATTRIBUTION ||
-  '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>';
+  '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &middot; Tiles &copy; Esri';
 
 function iconFor(p: MapPin): L.DivIcon {
   if (p.selected) {
