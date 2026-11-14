@@ -22,6 +22,9 @@ export async function POST(req: Request) {
     success_url: `${site}/plus/success?session_id={CHECKOUT_SESSION_ID}`,
     cancel_url: `${site}/plus`,
     allow_promotion_codes: false,
+    // US product: always charge and display in USD, even for viewers abroad (no automatic local-currency conversion).
+    adaptive_pricing: { enabled: false },
+    locale: "en",
   });
   return NextResponse.json({ url: session.url });
 }
