@@ -28,7 +28,14 @@ Live: **https://ifound-three.vercel.app** · Built for Zimran Business Cup 2.0 �
 
 No account, no password, no email verification.
 
-**Fastest path: the home page has a "Start the 60-second demo" button.** It creates a fresh, clearly labeled demo plan (needs 3 people). Tap *I'm in* (or *Use sample details*), then *Add a demo guest*: the guest joins through the same `join_event` as a real person, and the plan flips to **It's on!**. *Skip to the fill deadline* moves a demo plan's start time and runs the real `sweep_events()`, so you can see a plan get called off. Demo plans never appear in public lists, and demo addresses (`@demo.invalid`) never receive email.
+**Fastest path: the home page has a "Start the 60-second demo" button.** It creates a fresh, clearly labeled demo plan (needs 3 people), then:
+
+1. Tap *I'm in* (or *Use sample details*), then *+ Add a demo guest*. The guest joins through the same `join_event` as a real person, and the plan flips to **It's on!**
+2. *See the email everyone got*: the exact "It's on" email, rendered with the plan's real data.
+3. *Skip to the day before*: the real day-before reminder goes out. *Skip to after the plan*: the real `sweep_events()` marks it as happened.
+4. *Run it again next week*: the same plan, same local time, one week later. Everyone who came is invited first. For people this is part of iFound+; demo plans are free.
+
+On a plan that is still filling, *Skip to the fill deadline* shows a plan getting called off. Demo plans never appear in public lists, and demo addresses (`@demo.invalid`) never receive email.
 
 1. Open **Austin**. On a phone you land on the **swipe deck**: swipe right (or tap ✓) = *I'm in*, left = skip. The first right swipe asks for first name, email and "I'm 18 or older"; the next ones join in one tap. Or open any plan and tap **I'm in**.
 2. The counter updates on every open screen within ~8 seconds.
@@ -59,7 +66,8 @@ Times are always shown in the plan's city zone, with a "That's … in your time"
 | iFound+ (Stripe test mode), restore on another device | `/plus`, `/plus/restore` |
 | Venue: confirm by email link, manage plans (counts only) | `/v/verify/[token]`, `/v/manage/[token]` |
 | Leave from an email link (POST only — mail scanners can't unsubscribe you) | `/l/[token]` |
-| Moderation, demo plans, stats | `/admin?key=…` |
+| Run a plan again next week (iFound+), day-before reminders | `/e/[code]` · cron |
+| Moderation, demo plans, stats, funnel | `/admin?key=…` |
 
 The sweep runs every 10 minutes from Supabase `pg_cron` + `pg_net`, calling `GET /api/cron/sweep` with `Authorization: Bearer <CRON_SECRET>`. If it's late, plans still read correctly thanks to the effective status.
 
@@ -98,6 +106,7 @@ Demo plans are created through the product by the team and carry a **Demo** badg
 
 ## Honest limitations
 
+- Email delivery to any inbox requires a verified sending domain. The demo shows the exact emails in-app ("See the email everyone got").
 - Emails are not verified. Uniqueness by email (case-insensitive) stops one person from filling a plan alone by clearing cookies, but a determined person can use several addresses.
 - SMS, venue discounts and AI features ("Plan it for me", moderation) are second-queue work. `lib/ai/` is the hook point, behind `FEATURE_AI`.
 - Stripe runs in test mode only.
