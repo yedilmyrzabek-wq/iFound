@@ -4,6 +4,26 @@
 
 Live: **https://ifound-three.vercel.app** · Built for Zimran Business Cup 2.0 · US market, 5 cities, Austin first.
 
+<table>
+  <tr>
+    <td><img src="docs/screenshots/01-home.jpg" width="200" alt="Home: plans that only happen when enough people are in"></td>
+    <td><img src="docs/screenshots/02-swipe.jpg" width="200" alt="Swipe deck: swipe right to join"></td>
+    <td><img src="docs/screenshots/03-plan.jpg" width="200" alt="Plan page with the letterboard counter"></td>
+    <td><img src="docs/screenshots/04-its-on.jpg" width="200" alt="The plan fills and flips to It's on"></td>
+  </tr>
+  <tr>
+    <td align="center">Home</td><td align="center">Swipe deck</td><td align="center">A plan filling up</td><td align="center">It's on!</td>
+  </tr>
+  <tr>
+    <td><img src="docs/screenshots/05-new.jpg" width="200" alt="Start a plan in the city's time zone"></td>
+    <td><img src="docs/screenshots/06-plus.jpg" width="200" alt="iFound+ with Stripe test mode"></td>
+    <td colspan="2"><img src="docs/screenshots/07-desktop-city.jpg" width="410" alt="Desktop: Austin plans and venue map"></td>
+  </tr>
+  <tr>
+    <td align="center">Start a plan</td><td align="center">iFound+ ($8/mo)</td><td colspan="2" align="center">Desktop: city list + venue map</td>
+  </tr>
+</table>
+
 ## How to check (for the jury)
 
 No account, no password, no email verification.
