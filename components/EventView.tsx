@@ -2,6 +2,7 @@
 import Link from "next/link";
 import { useCallback, useState } from "react";
 import useSWR from "swr";
+import { DateTime } from "luxon";
 import { ACTIVITY_META } from "@/lib/activities";
 import { formatDeadline, formatRange, formatRelative, formatViewerLocal } from "@/lib/tz";
 import type { EventDetail, JoinResponse, MeProfile } from "@/lib/types";
@@ -13,6 +14,21 @@ import { DemoChip, StatusChip } from "./StatusChip";
 import { MapView } from "./map";
 import { useNow, useViewerZone } from "./useNow";
 import { ReportButton } from "./ReportButton";
+
+const SITE = (process.env.NEXT_PUBLIC_SITE_URL ?? "").replace(/\/$/, "");
+
+function googleCalendarUrl(e: EventDetail): string {
+  const fmt = (d: DateTime) => d.toUTC().toFormat("yyyyLLdd'T'HHmmss'Z'");
+  const start = DateTime.fromISO(e.startsAt, { zone: "utc" });
+  const qs = new URLSearchParams({
+    action: "TEMPLATE",
+    text: e.title,
+    dates: `${fmt(start)}/${fmt(start.plus({ minutes: e.durationMinutes }))}`,
+    location: [e.place.name, e.place.address].filter(Boolean).join(", "),
+    details: `Plan on iFound: ${SITE}/e/${e.code}`,
+  });
+  return `https://calendar.google.com/calendar/render?${qs}`;
+}
 
 const fetcher = async (url: string) => {
   const r = await fetch(url, { cache: "no-store" });
@@ -242,9 +258,19 @@ export function EventView({
       {e.viewer.role !== "guest" && open && (
         <div className="mt-6 flex flex-wrap gap-2">
           {e.status === "confirmed" && (
-            <a href={`/api/events/${e.code}/ics`} className="inline-flex h-11 items-center gap-2 rounded-full border border-line-strong bg-surface px-4 text-[15px] font-semibold">
-              <Icon name="calendar" size={18} /> Add to calendar
-            </a>
+            <>
+              <a href={`/api/events/${e.code}/ics`} className="inline-flex h-11 items-center gap-2 rounded-full border border-line-strong bg-surface px-4 text-[15px] font-semibold">
+                <Icon name="calendar" size={18} /> Add to calendar
+              </a>
+              <a
+                href={googleCalendarUrl(e)}
+                target="_blank"
+                rel="noreferrer"
+                className="inline-flex h-11 items-center gap-2 rounded-full border border-line-strong bg-surface px-4 text-[15px] font-semibold"
+              >
+                Google Calendar <Icon name="external" size={15} />
+              </a>
+            </>
           )}
           {e.viewer.role === "participant" &&
             (confirming === "leave" ? (
