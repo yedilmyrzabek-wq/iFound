@@ -1,0 +1,114 @@
+[
+  {
+    "osm_ref": "node/4995157822",
+    "name": "Capital One Café",
+    "address": "1550 Wewatta Street",
+    "category": "cafe",
+    "lat": 39.752912,
+    "lng": -105.002522
+  },
+  {
+    "osm_ref": "node/13058835855",
+    "name": "Ms. Marji's",
+    "address": "1640 Logan Street",
+    "category": "cafe",
+    "lat": 39.742551,
+    "lng": -104.98211
+  },
+  {
+    "osm_ref": "node/5581805758",
+    "name": "Rendezvous Cafe",
+    "address": "1200 Broadway",
+    "category": "cafe",
+    "lat": 39.735948,
+    "lng": -104.987146
+  },
+  {
+    "osm_ref": "node/3401632116",
+    "name": "Roostercat Coffee House",
+    "address": "1045 Lincoln Street",
+    "category": "cafe",
+    "lat": 39.733028,
+    "lng": -104.986382
+  },
+  {
+    "osm_ref": "node/5442647118",
+    "name": "Sie FilmCenter",
+    "address": "2510 East Colfax Avenue",
+    "category": "cinema",
+    "lat": 39.739658,
+    "lng": -104.956975
+  },
+  {
+    "osm_ref": "node/3385529569",
+    "name": "The University Club of Denver",
+    "address": "1673 Sherman Street",
+    "category": "community_centre",
+    "lat": 39.743042,
+    "lng": -104.985261
+  },
+  {
+    "osm_ref": "node/2467189681",
+    "name": "Ned's Mile High Magic and More",
+    "address": "6719 West Colfax Avenue",
+    "category": "game_store",
+    "lat": 39.741675,
+    "lng": -105.071078
+  },
+  {
+    "osm_ref": "node/8034502312",
+    "name": "Warhammer",
+    "address": "1112 South Colorado Boulevard",
+    "category": "game_store",
+    "lat": 39.696223,
+    "lng": -104.939665
+  },
+  {
+    "osm_ref": "node/672563777",
+    "name": "Blair-CaldwellAfrican American Research Library",
+    "address": "2401 Welton Street",
+    "category": "library",
+    "lat": 39.752434,
+    "lng": -104.981533
+  },
+  {
+    "osm_ref": "way/777124810",
+    "name": "Civic Center Park",
+    "address": "101 West 14th Avenue Parkway",
+    "category": "park",
+    "lat": 39.73917,
+    "lng": -104.989114
+  },
+  {
+    "osm_ref": "way/807938968",
+    "name": "Governors Park",
+    "address": "701 Pennsylvania Street",
+    "category": "park",
+    "lat": 39.727957,
+    "lng": -104.981757
+  },
+  {
+    "osm_ref": "way/1308092102",
+    "name": "Ninth Street Historic Park",
+    "address": "9th Street",
+    "category": "park",
+    "lat": 39.741602,
+    "lng": -105.00381
+  },
+  {
+    "osm_ref": "way/301434014",
+    "name": "North High School Soccer Field",
+    "address": null,
+    "category": "pitch",
+    "lat": 39.759282,
+    "lng": -105.021033
+  },
+  {
+    "osm_ref": "way/1205999796",
+    "name": "Soccer pitch outline - no goals",
+    "address": null,
+    "category": "pitch",
+    "lat": 39.731341,
+    "lng": -104.993419
+  }
+]

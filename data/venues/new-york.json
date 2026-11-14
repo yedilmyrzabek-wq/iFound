@@ -1,0 +1,114 @@
+[
+  {
+    "osm_ref": "node/2897265318",
+    "name": "d Elici",
+    "address": "71 Nassau Street",
+    "category": "cafe",
+    "lat": 40.709679,
+    "lng": -74.008382
+  },
+  {
+    "osm_ref": "node/5265713182",
+    "name": "Ferrara",
+    "address": "195 Grand Street",
+    "category": "cafe",
+    "lat": 40.719102,
+    "lng": -73.997065
+  },
+  {
+    "osm_ref": "node/2825233200",
+    "name": "Takahachi Bakery",
+    "address": "25 Murray Street",
+    "category": "cafe",
+    "lat": 40.713728,
+    "lng": -74.008434
+  },
+  {
+    "osm_ref": "node/11119847161",
+    "name": "Tutto Calcio Espresso Bar",
+    "address": "24 John Street",
+    "category": "cafe",
+    "lat": 40.709671,
+    "lng": -74.00876
+  },
+  {
+    "osm_ref": "node/889115578",
+    "name": "Regal Battery Park",
+    "address": "102 North End Avenue",
+    "category": "cinema",
+    "lat": 40.714742,
+    "lng": -74.015169
+  },
+  {
+    "osm_ref": "node/2563988693",
+    "name": "Downtown Community Television Center",
+    "address": "87 Lafayette Street",
+    "category": "community_centre",
+    "lat": 40.717373,
+    "lng": -74.001273
+  },
+  {
+    "osm_ref": "node/9105415809",
+    "name": "Chess Forum",
+    "address": "219 Thompson Street",
+    "category": "game_store",
+    "lat": 40.729141,
+    "lng": -73.999197
+  },
+  {
+    "osm_ref": "node/2567560972",
+    "name": "Xenozero Gaming",
+    "address": "21 Ludlow Street",
+    "category": "game_store",
+    "lat": 40.715378,
+    "lng": -73.99088
+  },
+  {
+    "osm_ref": "node/2632446787",
+    "name": "New Amsterdam Library",
+    "address": "9 Murray Street",
+    "category": "library",
+    "lat": 40.713492,
+    "lng": -74.007925
+  },
+  {
+    "osm_ref": "way/108153375",
+    "name": "Collect Pond Park",
+    "address": "130 Leonard Street",
+    "category": "park",
+    "lat": 40.716296,
+    "lng": -74.001856
+  },
+  {
+    "osm_ref": "way/53189828",
+    "name": "DeLury Square",
+    "address": "77 Fulton Street",
+    "category": "park",
+    "lat": 40.709108,
+    "lng": -74.005028
+  },
+  {
+    "osm_ref": "way/109330342",
+    "name": "James Madison Plaza",
+    "address": "1 Madison Street",
+    "category": "park",
+    "lat": 40.711423,
+    "lng": -74.000375
+  },
+  {
+    "osm_ref": "way/66389835",
+    "name": "Lions Gate Field",
+    "address": null,
+    "category": "pitch",
+    "lat": 40.718459,
+    "lng": -73.99324
+  },
+  {
+    "osm_ref": "way/983720705",
+    "name": "The Pit",
+    "address": null,
+    "category": "pitch",
+    "lat": 40.719239,
+    "lng": -73.992826
+  }
+]

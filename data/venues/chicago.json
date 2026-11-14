@@ -1,0 +1,114 @@
+[
+  {
+    "osm_ref": "node/4567467091",
+    "name": "Cafecito",
+    "address": "7 North Wells Street",
+    "category": "cafe",
+    "lat": 41.882319,
+    "lng": -87.633654
+  },
+  {
+    "osm_ref": "node/12118894952",
+    "name": "Capital One Café at State Street",
+    "address": "100 South State Street",
+    "category": "cafe",
+    "lat": 41.880555,
+    "lng": -87.628
+  },
+  {
+    "osm_ref": "node/4729978589",
+    "name": "Goddess and the Baker",
+    "address": "33 South Wabash Avenue",
+    "category": "cafe",
+    "lat": 41.881408,
+    "lng": -87.625945
+  },
+  {
+    "osm_ref": "node/1308260687",
+    "name": "Intelligentsia Coffee",
+    "address": "53 East Randolph Street",
+    "category": "cafe",
+    "lat": 41.884355,
+    "lng": -87.625863
+  },
+  {
+    "osm_ref": "node/5115836538",
+    "name": "AMC Dine-In Block 37",
+    "address": "108 North State Street",
+    "category": "cinema",
+    "lat": 41.883684,
+    "lng": -87.628272
+  },
+  {
+    "osm_ref": "node/12061664116",
+    "name": "Metro Achievement Center",
+    "address": "310 South Peoria Street",
+    "category": "community_centre",
+    "lat": 41.87736,
+    "lng": -87.649735
+  },
+  {
+    "osm_ref": "node/8953043816",
+    "name": "Good Games Chicago",
+    "address": "1145 West Webster Avenue",
+    "category": "game_store",
+    "lat": 41.921575,
+    "lng": -87.657637
+  },
+  {
+    "osm_ref": "node/14148813613",
+    "name": "Spellbound Games",
+    "address": "1116 North Milwaukee Avenue",
+    "category": "game_store",
+    "lat": 41.901913,
+    "lng": -87.66459
+  },
+  {
+    "osm_ref": "node/10141193619",
+    "name": "John M. Flaxman Library",
+    "address": "37 South Wabash Avenue",
+    "category": "library",
+    "lat": 41.881014,
+    "lng": -87.625693
+  },
+  {
+    "osm_ref": "way/136341654",
+    "name": "Dearborn Park",
+    "address": "865 South Park Terrace",
+    "category": "park",
+    "lat": 41.87096,
+    "lng": -87.629088
+  },
+  {
+    "osm_ref": "way/224231352",
+    "name": "Maggie Daley Park",
+    "address": "337 East Randolph Street",
+    "category": "park",
+    "lat": 41.88272,
+    "lng": -87.617609
+  },
+  {
+    "osm_ref": "way/23888253",
+    "name": "Millennium Park",
+    "address": "201 East Randolph Street",
+    "category": "park",
+    "lat": 41.882617,
+    "lng": -87.622518
+  },
+  {
+    "osm_ref": "way/49231277",
+    "name": "Flames Field",
+    "address": null,
+    "category": "pitch",
+    "lat": 41.865511,
+    "lng": -87.65028
+  },
+  {
+    "osm_ref": "way/232865906",
+    "name": "Hawthorne Turf Field",
+    "address": null,
+    "category": "pitch",
+    "lat": 41.94216,
+    "lng": -87.657032
+  }
+]

@@ -1,0 +1,250 @@
+[
+  {
+    "osm_ref": "node/919335942",
+    "name": "Bennu Coffee Shop",
+    "address": "515 South Congress Avenue",
+    "category": "cafe",
+    "lat": 30.256106,
+    "lng": -97.746203
+  },
+  {
+    "osm_ref": "node/2507491258",
+    "name": "Cherrywood Coffee House",
+    "address": "1400 E 38th 1/2 St.",
+    "category": "cafe",
+    "lat": 30.293549,
+    "lng": -97.716053
+  },
+  {
+    "osm_ref": "node/3190877885",
+    "name": "Jo's Coffee",
+    "address": "242 West 2nd Street",
+    "category": "cafe",
+    "lat": 30.265013,
+    "lng": -97.746096
+  },
+  {
+    "osm_ref": "node/3190890891",
+    "name": "Houndstooth",
+    "address": "401 Congress Avenue",
+    "category": "cafe",
+    "lat": 30.266284,
+    "lng": -97.743114
+  },
+  {
+    "osm_ref": "node/3533712652",
+    "name": "Wright Bros. Brew & Brew",
+    "address": "500 San Marcos Street",
+    "category": "cafe",
+    "lat": 30.264449,
+    "lng": -97.733041
+  },
+  {
+    "osm_ref": "node/5771559041",
+    "name": "Figure 8 Coffee Purveyors",
+    "address": "1111 Chicon Street",
+    "category": "cafe",
+    "lat": 30.266883,
+    "lng": -97.719949
+  },
+  {
+    "osm_ref": "node/3849779903",
+    "name": "Fleet Coffee",
+    "address": "802 Congress Avenue",
+    "category": "cafe",
+    "lat": 30.270247,
+    "lng": -97.742287
+  },
+  {
+    "osm_ref": "node/8931050056",
+    "name": "Merit Coffee",
+    "address": "222 West Avenue",
+    "category": "cafe",
+    "lat": 30.267566,
+    "lng": -97.752141
+  },
+  {
+    "osm_ref": "node/10563618404",
+    "name": "Medici Roasting",
+    "address": "1100 South Lamar Boulevard",
+    "category": "cafe",
+    "lat": 30.25576,
+    "lng": -97.762374
+  },
+  {
+    "osm_ref": "node/13947744901",
+    "name": "Black Fox Coffee",
+    "address": "321 West 6th Street",
+    "category": "cafe",
+    "lat": 30.268705,
+    "lng": -97.746067
+  },
+  {
+    "osm_ref": "node/13776620882",
+    "name": "Neighbors Café",
+    "address": "96 Red River Street",
+    "category": "cafe",
+    "lat": 30.260878,
+    "lng": -97.739349
+  },
+  {
+    "osm_ref": "node/13787879801",
+    "name": "1886 Café & Bakery",
+    "address": "604 Brazos Street",
+    "category": "cafe",
+    "lat": 30.268011,
+    "lng": -97.741919
+  },
+  {
+    "osm_ref": "way/92460015",
+    "name": "Waterloo Park",
+    "address": "500 East 12th Street",
+    "category": "park",
+    "lat": 30.274131,
+    "lng": -97.73592
+  },
+  {
+    "osm_ref": "way/903143008",
+    "name": "Republic Square",
+    "address": "422 Guadalupe Street",
+    "category": "park",
+    "lat": 30.267791,
+    "lng": -97.747371
+  },
+  {
+    "osm_ref": "way/326162404",
+    "name": "Pease District Park",
+    "address": null,
+    "category": "park",
+    "lat": 30.284431,
+    "lng": -97.752809
+  },
+  {
+    "osm_ref": "way/349698359",
+    "name": "Mueller Lake Park",
+    "address": "4550 Mueller Boulevard",
+    "category": "park",
+    "lat": 30.296198,
+    "lng": -97.705736
+  },
+  {
+    "osm_ref": "way/208167635",
+    "name": "Eastwoods Neighborhood Park",
+    "address": "3001 Harris Park Avenue",
+    "category": "park",
+    "lat": 30.290534,
+    "lng": -97.731663
+  },
+  {
+    "osm_ref": "way/1100976990",
+    "name": "Edward Rendon Sr. Metropolitan Park at Festival Beach",
+    "address": "2101 Jesse E Segovia Street",
+    "category": "park",
+    "lat": 30.250694,
+    "lng": -97.728751
+  },
+  {
+    "osm_ref": "way/971507719",
+    "name": "Volma Overton Sr. Beach at Town Lake Metro Park",
+    "address": "1200 West Cesar Chavez Street",
+    "category": "park",
+    "lat": 30.270865,
+    "lng": -97.763797
+  },
+  {
+    "osm_ref": "way/97336071",
+    "name": "Givens District Park",
+    "address": "3811 East 12th Street",
+    "category": "park",
+    "lat": 30.276039,
+    "lng": -97.691359
+  },
+  {
+    "osm_ref": "way/732242104",
+    "name": "Little Zilker Neighborhood Park",
+    "address": "2016 Bluebonnet Lane",
+    "category": "park",
+    "lat": 30.25177,
+    "lng": -97.775296
+  },
+  {
+    "osm_ref": "node/661314999",
+    "name": "AFS Cinema",
+    "address": "6259 Middle Fiskville Road",
+    "category": "cinema",
+    "lat": 30.324364,
+    "lng": -97.708716
+  },
+  {
+    "osm_ref": "node/8958597082",
+    "name": "Violet Crown Cinema",
+    "address": null,
+    "category": "cinema",
+    "lat": 30.265656,
+    "lng": -97.748341
+  },
+  {
+    "osm_ref": "node/5771241709",
+    "name": "Regal Cinema Westgate 11",
+    "address": null,
+    "category": "cinema",
+    "lat": 30.230197,
+    "lng": -97.799775
+  },
+  {
+    "osm_ref": "node/12923867753",
+    "name": "Perry-Castañeda Library Map Collection",
+    "address": "101 East 21st Street",
+    "category": "library",
+    "lat": 30.282833,
+    "lng": -97.738505
+  },
+  {
+    "osm_ref": "node/13912750063",
+    "name": "Benson Latin American Collection",
+    "address": "2300 Red River Street",
+    "category": "library",
+    "lat": 30.283869,
+    "lng": -97.729332
+  },
+  {
+    "osm_ref": "node/13787540401",
+    "name": "Alamo Recreation Center",
+    "address": "2100 Alamo Street",
+    "category": "community_centre",
+    "lat": 30.282373,
+    "lng": -97.719959
+  },
+  {
+    "osm_ref": "node/4966406025",
+    "name": "Montopolis Recreation Center",
+    "address": "1200 Montopolis Drive",
+    "category": "community_centre",
+    "lat": 30.232305,
+    "lng": -97.699897
+  },
+  {
+    "osm_ref": "way/188589239",
+    "name": "St. Edward's Soccer Field",
+    "address": null,
+    "category": "pitch",
+    "lat": 30.230491,
+    "lng": -97.753896
+  },
+  {
+    "osm_ref": "way/481663868",
+    "name": "Merideth Soccer Field",
+    "address": null,
+    "category": "pitch",
+    "lat": 30.32878,
+    "lng": -97.816196
+  },
+  {
+    "osm_ref": "way/588145879",
+    "name": "Delwood Multipurpose Field",
+    "address": "1815 Greenbrook Parkway",
+    "category": "pitch",
+    "lat": 30.302723,
+    "lng": -97.694578
+  }
+]

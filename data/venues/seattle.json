@@ -1,0 +1,114 @@
+[
+  {
+    "osm_ref": "node/2351712444",
+    "name": "Caffè Umbria",
+    "address": "320 Occidental Avenue South",
+    "category": "cafe",
+    "lat": 47.599386,
+    "lng": -122.332689
+  },
+  {
+    "osm_ref": "node/2397497102",
+    "name": "Copacabana",
+    "address": "1520 1/2 Pike Place",
+    "category": "cafe",
+    "lat": 47.60924,
+    "lng": -122.341264
+  },
+  {
+    "osm_ref": "node/2561809378",
+    "name": "The Crumpet Shop",
+    "address": "1503 1st Avenue",
+    "category": "cafe",
+    "lat": 47.608968,
+    "lng": -122.34039
+  },
+  {
+    "osm_ref": "node/663911505",
+    "name": "Zeitgeist Coffee",
+    "address": "171 South Jackson Street",
+    "category": "cafe",
+    "lat": 47.599091,
+    "lng": -122.331856
+  },
+  {
+    "osm_ref": "node/2079419115",
+    "name": "Regal Meridian 16",
+    "address": "1501 7th Avenue",
+    "category": "cinema",
+    "lat": 47.611688,
+    "lng": -122.333699
+  },
+  {
+    "osm_ref": "node/2351712524",
+    "name": "Chief Seattle Club",
+    "address": "410 2nd Avenue Extension South",
+    "category": "community_centre",
+    "lat": 47.601277,
+    "lng": -122.331271
+  },
+  {
+    "osm_ref": "node/2158750797",
+    "name": "Loot Table Café",
+    "address": "911 East Pine Street",
+    "category": "game_store",
+    "lat": 47.615121,
+    "lng": -122.320041
+  },
+  {
+    "osm_ref": "node/2703661948",
+    "name": "The Tilted Table",
+    "address": "501 East Pine Street",
+    "category": "game_store",
+    "lat": 47.615086,
+    "lng": -122.325137
+  },
+  {
+    "osm_ref": "node/430982177",
+    "name": "The Seattle Public Library - International District / Chinatown Branch Branch",
+    "address": "713 8th Avenue South",
+    "category": "library",
+    "lat": 47.596161,
+    "lng": -122.322621
+  },
+  {
+    "osm_ref": "way/174692555",
+    "name": "Occidental Square",
+    "address": "117 South Washington Street",
+    "category": "park",
+    "lat": 47.600464,
+    "lng": -122.333147
+  },
+  {
+    "osm_ref": "way/1334956995",
+    "name": "Waterfront Park",
+    "address": "1401 Alaskan Way",
+    "category": "park",
+    "lat": 47.603746,
+    "lng": -122.340628
+  },
+  {
+    "osm_ref": "way/8097291",
+    "name": "Westlake Park",
+    "address": "401 Pine Street",
+    "category": "park",
+    "lat": 47.610908,
+    "lng": -122.337075
+  },
+  {
+    "osm_ref": "way/330874561",
+    "name": "Championship Field",
+    "address": "Su Campus Walk",
+    "category": "pitch",
+    "lat": 47.606855,
+    "lng": -122.314853
+  },
+  {
+    "osm_ref": "way/675720761",
+    "name": "RAVE Soccer Spot",
+    "address": null,
+    "category": "pitch",
+    "lat": 47.601012,
+    "lng": -122.320895
+  }
+]

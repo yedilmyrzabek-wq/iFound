@@ -1,0 +1,123 @@
+import Link from "next/link";
+import { listCities, listEvents } from "@/lib/events";
+import { nowUtc } from "@/lib/tz";
+import { EventCard } from "@/components/EventCard";
+import { Footer, Header } from "@/components/Header";
+import { HomeMap } from "@/components/HomeMap";
+import { LetterLine } from "@/components/Letterboard";
+import { WaitlistForm } from "@/components/WaitlistForm";
+
+export const dynamic = "force-dynamic";
+
+export default async function Home() {
+  const cities = await listCities();
+  const austin = cities.find((c) => c.slug === "austin");
+  const soon = austin ? (await listEvents("austin", austin.timezone, "all", [])).slice(0, 6) : [];
+  const now = nowUtc();
+
+  return (
+    <>
+      <Header />
+      <main>
+        <section className="mx-auto max-w-6xl px-4 pt-8 pb-10 sm:pt-14">
+          <div className="grid items-center gap-8 lg:grid-cols-[1.1fr_1fr]">
+            <div>
+              <h1 className="text-[clamp(2.3rem,8.5vw,4.25rem)] leading-[1.02] font-extrabold tracking-[-0.03em]">
+                Plans that only happen when enough people are in.
+              </h1>
+              <p className="mt-5 max-w-[34rem] text-[18px] leading-relaxed text-ink-2">
+                Pick a plan near you and tap I'm in. If enough people join, it's on. If not, it's quietly called off — nobody shows up
+                alone.
+              </p>
+              <div className="mt-7 flex flex-wrap gap-2">
+                <Link href="/c/austin" className="inline-flex h-[52px] items-center rounded-full bg-bulb px-6 text-[17px] font-extrabold text-ink shadow-[0_1px_0_rgb(0_0_0/0.15),0_8px_20px_-8px_rgb(227_164_0/0.8)] hover:bg-[#ffd25c]">
+                  See plans in Austin
+                </Link>
+                <Link href="/new" className="inline-flex h-[52px] items-center rounded-full border border-line-strong bg-surface px-6 text-[17px] font-bold">
+                  Start a plan
+                </Link>
+              </div>
+            </div>
+            {/* The mechanic, shown on the board itself */}
+            <div className="felt rounded-[14px] px-6 py-6 [container-type:inline-size]" aria-label="Example: 4 of 6 are in, needs 2 more. At 6, it's on.">
+              <LetterLine text="4 of 6" style={{ fontSize: "min(5.5rem, 24cqw)" }} />
+              <LetterLine text="are in" className="mt-1 text-[clamp(1.4rem,9cqw,2.4rem)]" />
+              <LetterLine text="needs 2 more" className="mt-1 text-[clamp(1rem,6cqw,1.5rem)] [&_.letter]:text-bulb" />
+              <div className="mt-5 border-t border-white/15 pt-4">
+                <LetterLine text="at 6 → it's on" className="text-[clamp(1rem,6cqw,1.5rem)] [&_.letter]:text-go-bright" />
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section className="mx-auto max-w-6xl px-4" aria-labelledby="cities">
+          <h2 id="cities" className="text-[22px] font-bold">
+            Pick your city
+          </h2>
+          <div className="mt-3 flex flex-wrap gap-2">
+            {cities.map((c) => (
+              <Link key={c.slug} href={`/c/${c.slug}`} className="inline-flex h-11 items-center gap-2 rounded-full border border-line-strong bg-surface px-4 text-[16px] font-semibold hover:border-ink/50">
+                {c.name.split(",")[0]}
+                <span className={`rounded-full px-2 py-0.5 text-[13px] ${c.openCount ? "bg-bulb text-ink" : "bg-[#e4e6e1] text-ink-2"}`}>{c.openCount}</span>
+              </Link>
+            ))}
+          </div>
+          <div className="mt-4 hidden h-[380px] overflow-hidden rounded-[10px] border border-line sm:block">
+            <HomeMap cities={cities} />
+          </div>
+        </section>
+
+        {soon.length > 0 && (
+          <section className="mx-auto mt-12 max-w-6xl px-4" aria-labelledby="soon">
+            <div className="flex items-end justify-between gap-3">
+              <h2 id="soon" className="text-[22px] font-bold">
+                Happening in Austin
+              </h2>
+              <Link href="/c/austin" className="text-[15px] font-semibold underline">
+                See all
+              </Link>
+            </div>
+            <ul className="mt-3 grid gap-3 md:grid-cols-2">
+              {soon.map((e) => (
+                <li key={e.code}>
+                  <EventCard e={e} timezone={austin!.timezone} now={now} />
+                </li>
+              ))}
+            </ul>
+          </section>
+        )}
+
+        <section className="mx-auto mt-14 max-w-6xl px-4" aria-labelledby="how">
+          <h2 id="how" className="text-[22px] font-bold">
+            How it works
+          </h2>
+          <ol className="mt-4 grid gap-6 sm:grid-cols-3">
+            {[
+              ["Pick a plan", "Board games at a cafe, a run by the lake, pickup soccer. Real places, real times."],
+              ["Tap I'm in", "First name and email. No account, no password."],
+              ["It's on when it fills", "When enough people are in, everyone gets “It's on”. If not, it's called off 2 hours before."],
+            ].map(([t, d]) => (
+              <li key={t} className="border-t-2 border-ink pt-3">
+                <h3 className="text-[18px] font-bold">{t}</h3>
+                <p className="mt-1 text-[16px] leading-relaxed text-ink-2">{d}</p>
+              </li>
+            ))}
+          </ol>
+          <Link href="/new" className="mt-7 inline-flex h-[52px] items-center rounded-full bg-ink px-6 text-[17px] font-bold text-white">
+            Start a plan
+          </Link>
+        </section>
+
+        <section className="mx-auto mt-14 max-w-6xl px-4" aria-labelledby="wl">
+          <div className="rounded-[10px] border border-line bg-surface p-5 sm:p-7">
+            <h2 id="wl" className="text-[20px] font-bold">
+              Not in these cities yet? Tell us where you are.
+            </h2>
+            <WaitlistForm />
+          </div>
+        </section>
+      </main>
+      <Footer />
+    </>
+  );
+}
