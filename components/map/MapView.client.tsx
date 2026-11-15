@@ -73,6 +73,19 @@ function PlainPrefix() {
   return null;
 }
 
+// The map can mount while hidden (mobile City view starts on Swipe), so Leaflet caches a 0×0 size.
+// Re-measure whenever the container's size changes, or tiles and pin hit areas end up misplaced.
+function SizeWatcher() {
+  const map = useMap();
+  useEffect(() => {
+    const el = map.getContainer();
+    const ro = new ResizeObserver(() => map.invalidateSize());
+    ro.observe(el);
+    return () => ro.disconnect();
+  }, [map]);
+  return null;
+}
+
 function ClickCatcher({ onClick }: { onClick: (lat: number, lng: number) => void }) {
   useMapEvents({ click: (e) => onClick(+e.latlng.lat.toFixed(6), +e.latlng.lng.toFixed(6)) });
   return null;
@@ -125,6 +138,7 @@ export default function MapView({
     >
       <TileLayer url={tiles ?? TILES} attribution={ATTRIBUTION} />
       <PlainPrefix />
+      <SizeWatcher />
       {onMapClick && <ClickCatcher onClick={onMapClick} />}
       {focus && <FlyTo lat={focus.lat} lng={focus.lng} zoom={focus.zoom} />}
       {pins.map((p) => (
