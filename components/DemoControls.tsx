@@ -84,7 +84,7 @@ export function DemoControls({
         ) : (
           <>It's on. See the email everyone got, skip ahead to the day-before reminder, then to after the plan.</>
         )}{" "}
-        Demo plans never show up in public lists.
+        This demo plan never shows up in public lists.
       </p>
       <div className="mt-3 flex flex-wrap gap-2">
         {open && status === "filling" && (

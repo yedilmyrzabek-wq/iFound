@@ -56,7 +56,10 @@ export default async function Home() {
 
         <section className="mx-auto mb-12 max-w-6xl px-4" aria-labelledby="jury">
           <div className="rounded-[14px] border-2 border-dashed border-bulb-deep bg-[#fff8e3] p-5 sm:p-7">
-            <h2 id="jury" className="text-[22px] font-extrabold">Trying iFound? Here's the 60-second path</h2>
+            <div className="flex flex-wrap items-center justify-between gap-3">
+              <h2 id="jury" className="text-[22px] font-extrabold">Trying iFound? Here's the 60-second path</h2>
+              <DemoStartButton />
+            </div>
             <ol className="mt-3 list-decimal space-y-1.5 pl-5 text-[16px] leading-relaxed">
               <li>
                 Start a <span className="font-semibold">demo plan</span> — board games in Austin that needs 3 people.
@@ -84,7 +87,6 @@ export default async function Home() {
                 with test card 4242 4242 4242 4242.
               </li>
             </ol>
-            <DemoStartButton className="mt-5" />
           </div>
         </section>
 
