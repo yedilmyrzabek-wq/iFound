@@ -7,9 +7,9 @@ type Rule = { bucket: string; max: number; windowMinutes: number };
 
 export const RULES = {
   createToken: (t: string): Rule => ({ bucket: `create:token:${t}`, max: 3, windowMinutes: 24 * 60 }),
-  createIp: (ip: string): Rule => ({ bucket: `create:ip:${ip}`, max: 20, windowMinutes: 24 * 60 }),
+  createIp: (ip: string): Rule => ({ bucket: `create:ip:${ip}`, max: 100, windowMinutes: 24 * 60 }),
   joinToken: (t: string): Rule => ({ bucket: `join:token:${t}`, max: 30, windowMinutes: 60 }),
-  joinIp: (ip: string): Rule => ({ bucket: `join:ip:${ip}`, max: 60, windowMinutes: 60 }),
+  joinIp: (ip: string): Rule => ({ bucket: `join:ip:${ip}`, max: 300, windowMinutes: 60 }),
   uploadToken: (t: string): Rule => ({ bucket: `upload:token:${t}`, max: 20, windowMinutes: 60 }),
   reportToken: (t: string): Rule => ({ bucket: `report:token:${t}`, max: 20, windowMinutes: 24 * 60 }),
   waitlistToken: (t: string): Rule => ({ bucket: `waitlist:token:${t}`, max: 10, windowMinutes: 24 * 60 }),
